@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>{{if eq .title ""}}Revel 中文社区 - Golang{{else}}{{.title}} - Revel 中文社区 - Golang{{end}}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="keywords" content="Revel,Revel社区,Revel中文社区,Revel论坛,Revel中国,Revel框架,Go框架,GoWeb框架,GoRevel学习,gorevel社区,gorevel中文社区,Golang,Go社区,Golang中文,Go语言学习,Go语言,学习Go语言,Golang 中国,Golang中国,Golang China, Go语言论坛, Revel,revel,gorevel">
+	<meta name="description" content="Revel中国,Revel中文社区,中国 Revel社区，Go语言学习,Go语言爱好者,Revel,revel,gorevel。">
+	<!-- <link rel="shortcut icon" href="/public/img/favicon.ico"> -->
+	<link rel="stylesheet" type="text/css" href="/public/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/public/css/bootstrap-responsive.min.css">
+	<link rel="stylesheet" type="text/css" href="/public/css/journal.min.css">
+	<link rel="stylesheet" type="text/css" href="/public/css/revel.css">
+	<link rel="stylesheet" type="text/css" href="/public/css/prettify.css">
+
+	<link rel="stylesheet" type="text/css" href="/public/css/custom.css">
+
+<!-- 	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700" rel="stylesheet" type="text/css"> -->
+
+	<script src="/public/js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/public/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="/public/js/prettify.js" type="text/javascript"></script>
+	<script src="/public/js/lang-go-rich.js" type="text/javascript"></script>
+	<script src="/public/js/jquery.timeago.js" type="text/javascript"></script>
+	<script type="text/javascript" src="/public/js/jquery.timeago.zh-CN.js"></script>
+
+	{{range .moreStyles}}
+		<link rel="stylesheet" type="text/css" href="/public/{{.}}">
+	{{end}}
+
+	{{range .moreScripts}}
+		<script src="/public/{{.}}" type="text/javascript" charset="utf-8"></script>
+	{{end}}
+
+	</head>
+	<body onload="prettyPrint()">
+	{{ if eq .title ""}}
+		<a href="https://github.com/goofcc/gorevel.git" target="_blank" >
+			<img style="position: fixed; top: 0; right: 0; border: 0; z-index:1000;" src="/public/img/forkme_right_orange_ff7600.png" alt="Fork me on GitHub">
+		</a>
+	{{end}}
+	<div class="navbar navbar-fixed-top" style="z-index:999;">
+		<div class="navbar-inner">
+		<div class="container">
+			<a class="brand" href="{{url "App.Index"}}">
+			<img class="revel-hat-img" src="/public/img/revelhat.png" height="40" width="87"></a>
+
+			<div class="nav-collapse">
+			<ul class="nav">
+				<li {{if eq .active "Topic"}}class="active"{{end}}>
+					<a href="{{url "Topic.Index"}}">社区</a></li>
+				<li><a href="#">Blog</a></li>
+				<li><a href="http://robfig.github.io/revel/docs/godoc/">godoc</a></li>
+			</ul>
+
+			<ul class="nav pull-right">
+				{{if .user}}
+					<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i> {{.user.Name}}<b class="caret"></b></a>
+					<ul class="dropdown-menu" style="max-width:10px;">
+						{{if .user.IsAdmin}}<li><a href="{{url "Admin.Index"}}"><i class="icon-cog"></i>后台管理</a></li>{{end}}
+						<li><a href="{{url "User.Edit"}}"><i class="icon-edit"></i>个人信息</a></li>
+						<li><a href="{{url "User.Signout"}}"><i class="icon-off"></i>退出</a></li>
+					</ul>
+					</li>
+				{{else}}
+					<li><a href="{{url "User.Signin"}}">登录</a></li>
+					<li><a href="{{url "User.Signup"}}">注册</a></li>
+				{{end}}
+			</ul>
+			</div>
+		</div>
+		</div>
+	</div>

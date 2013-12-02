@@ -1,0 +1,76 @@
+{{append . "moreScripts" "js/ckeditor/ckeditor.js"}}
+{{template "header.html" .}}
+
+<div class="container fixed">
+	<div class="row row-fixed">
+		<div class="span9">
+			<div class="well well-white">
+				<div class="media border-none">
+					{{$user := .user}}
+					{{with .topic}}
+					<a class="pull-left" href="#">
+						<img src="{{.User.AvatarImgSrc}}" class="img-rounded"></img>
+					</a>
+					<div class="media-body">
+						<span class="time pull-right">
+							<abbr class="timeago" title="{{datetime .Created}}+00:00"></abbr>
+						</span>
+						<h4 class="media-heading">{{.Title}} {{if eq $user.Id .User.Id}}<a href="{{url "Topic.Edit" .Id}}"><i class="icon-edit"></i></a>{{end}}</h4>
+						<span class="label">{{.Category.Name}}</span> • 
+						<span class="">{{.User.Name}}</span>
+						{{if .Hits}} • <span class="">{{.Hits}}</span> 次浏览{{end}}
+						{{if .Replies}}
+							<span class="badge badge-info pull-right">{{.Replies}}</span>
+						{{end}}
+						<hr>
+						{{raw .Content}}
+					</div>
+					{{end}}
+				</div>
+
+				<div class="well well-small border-left">
+					<span class="">共{{.topic.Replies}}个回复</span>
+				</div>
+
+				{{range .replies}}
+				<div class="media well well-white well-small media-reply">
+					<a class="pull-left" href="#">
+						<img src="{{.User.AvatarImgSrc}}" class="img-rounded" style="margin-left:10px;"></img>
+					</a>
+					<div class="media-body">
+						<span><a class="">{{.User.Name}}</a></span>
+						<abbr class="timeago" title="{{datetime .Created}}+00:00"></abbr>回复
+						<hr>
+						{{raw .Content}}
+					</div>
+				</div>
+				{{end}}
+
+				<form action="{{url "Topic.Reply" .topic.Id}}" method="GET" class="form-horizontal">
+					<h3>
+					<hr>
+					<div class="media">
+						<a class="pull-left" href="#">
+							<img src="/public/img/reply.png" class="img-rounded"></img>
+						</a>
+						<div class="media-body">
+							{{with $field := field "content" .}}
+								<textarea class="ckeditor" name="{{$field.Name}}" class="span8"></textarea>
+								<span class="text-error">{{$field.Error}}</span>
+							{{end}}
+						</div>
+					</div>
+					<button type="submit" class="btn btn-primary pull-right">提交回复</button>
+				</form>
+
+				<div class="clearfix"></div>
+			</div>
+		</div>
+
+		<div class="span3">
+			{{template "topic/sidebar.html" .}}
+		</div>
+	</div>
+</div>
+
+{{template "footer.html" .}}

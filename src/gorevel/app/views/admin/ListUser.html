@@ -1,0 +1,59 @@
+{{set . "title" "用户列表"}}
+{{template "admin/header.html" .}}
+
+<div class="row-fluid">
+	<div class="span3">
+	{{template "admin/sidebar.html" .}}
+	</div><!--/span-->
+
+	<div class="span9">
+		{{template "flash.html" .}}
+		<div class="page-header">
+			<h3>{{.title}}</h3>
+		</div>
+		<table class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>名字</th>
+					<th>注册邮箱</th>
+					<th>注册时间</th>
+					<th>激活</th>
+					<th>操作</th>
+				</tr>
+			 </thead>
+			{{range .users}}
+				<tr id="{{.Id}}">
+					<td>{{.Id}}</td>
+					<td>{{.Name}}</td>
+					<td>{{.Email}}</td>
+					<td>{{datetime .Created}}</td>
+					<td>{{if .IsActive}}<i class="icon-ok"></i>{{else}}<i class="icon-remove"></i>{{end}}</td>
+					<td>
+						<button href="#" class="btn btn-mini btn-danger remove" id="{{.Id}}"><i class="icon-remove icon-white"></i> 删除</button>
+					</td>
+				</tr>
+			{{end}}
+		</table>
+	</div><!--/span-->
+</div><!--/row-->
+
+<script type="text/javascript">
+$(document).ready(function(){
+	var id, button;
+	$("button.remove").click(function () {
+		if (confirm("确定删除吗?")) {
+			var id = $(this).attr("id");
+			console.log('user/'+ id + '/delete')
+			$.getJSON('user/'+ id + '/delete', function(data) {
+				if (data) {
+					$("tr#" + id).fadeOut("slow", function () {
+						$("tr#" + id).remove();
+					});
+				};
+			});
+		};
+	});
+});
+</script>
+{{template "admin/footer.html" .}}

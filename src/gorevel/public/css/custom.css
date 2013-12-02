@@ -1,0 +1,124 @@
+body {
+  padding: 0 0 0 0;
+}
+
+.fixed {
+  margin-top: 58px;
+}
+
+.hero-unit {
+  margin-top: 58px;
+}
+
+.error {
+  color: #b94a48;
+  font-size: 16px;
+}
+
+.row-fixed{
+  margin-top: 20px;
+}
+
+.topic-fixed{
+  margin-left: -90px;
+}
+
+.well-white{
+  background-color: white;
+}
+
+.well-none{
+  padding: 10px;
+  margin: 0 0 20px 0;
+}
+
+.background{
+  background:url(http://static.tieba.baidu.com/tb/cms/frs/bg/bg_8_body.jpg) repeat;
+}
+
+.border-line{
+  border: 1px;
+}
+
+a.topic-title{
+  font-size: 18px;
+}
+
+.time {
+  font-size: 12px;
+  color: #999;
+  float: right;
+}
+
+.media{
+  border-bottom: 1px dashed #ebebeb;
+  padding: 10px 0px;
+  margin: 0px;
+}
+
+.media-reply{
+  border: 1px solid #e3e3e3;
+  margin-left: 50px;
+}
+
+.border-none{
+  border: none;
+}
+
+.border-left{
+    margin-left: 50px;
+}
+
+ul.m-bottom{
+  margin-bottom: 0;
+}
+
+hr.pretty{
+  margin: 5px;
+  color: blue;
+}
+
+a.gray{
+  color: gray;
+}
+
+span.badge-right{
+  margin-right: -10px;
+}
+
+button.btn-fixed{
+  margin: 10px 15px 0 0;
+}
+
+input[type="radio"].avatar{
+  padding: 15px;
+}
+
+/* Footer
+-------------------------------------------------- */
+
+.footer {
+  text-align: center;
+  padding: 30px 0;
+  margin-top: 40px;
+  border-top: 1px solid #e5e5e5;
+  /*background-color: #f5f5f5;*/
+}
+.footer p {
+  margin-bottom: 0;
+  color: #777;
+}
+.footer-links {
+  margin: 10px 0;
+}
+.footer-links li {
+  display: inline;
+  padding: 0 2px;
+}
+.footer-links li:first-child {
+  padding-left: 0;
+}
+
+.pagination {
+  margin-bottom: 0px;
+}

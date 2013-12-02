@@ -1,0 +1,40 @@
+{{set . "title" "用户登录"}}
+{{template "header.html" .}}
+
+<div class="container fixed">
+	<div class="section">
+		<div class="page-header">
+			<h2>{{.title}}</h2>
+		</div>
+		{{template "flash.html" .}}
+		<form action="{{url "User.SigninPost"}}" method="POST" class="form-horizontal">
+			<input type="hidden" name="csrf_token" value="{{ .csrf_token }}" />
+			{{with $field := field "name" .}}
+			<div class="control-group">
+				<label class="control-label" for="{{$field.Name}}">用户名</label>
+				<div class="controls">
+					<input type="text" name="{{$field.Name}}" value="{{$field.Flash}}" id="{{$field.Name}}" placeholder="用户名">
+					<span class="text-error">{{$field.Error}}</span>
+				</div>
+			</div>
+			{{end}}
+
+			{{with $field := field "password" .}}
+			<div class="control-group">
+				<label class="control-label" for="{{$field.Name}}">密码</label>
+				<div class="controls">
+					<input type="password" name="{{$field.Name}}" value="{{$field.Flash}}" id="{{$field.Name}}" placeholder="密码">
+					<span class="text-error">{{$field.Error}}</span>
+				</div>
+			</div>
+			{{end}}
+
+			<div class="control-group">
+				<div class="controls">
+					<button type="submit" class="btn btn-primary">登录</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{{template "footer.html" .}}

@@ -1,0 +1,43 @@
+
+	</div><!--/.fluid-container-->
+
+	<footer id="footer">
+		<hr>
+		<p class="text-center">&copy; Company 2013</p>
+	</footer>
+
+	<!-- Le javascript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+<!-- 
+	<script type="text/javascript">
+		// Window load event used just in case window height is dependant upon images
+		$(window).bind("load", function() { 
+			var footerHeight = 0,
+				footerTop = 0,
+				$footer = $("#footer");
+				
+			positionFooter();
+
+			function positionFooter() {
+						footerHeight = $footer.height();
+						footerTop = ($(window).scrollTop()+$(window).height()-footerHeight)+"px";
+
+						$footer.css({
+								position: "absolute",
+								top: footerTop
+						})
+			}
+
+			$(window)
+					.scroll(positionFooter)
+					.resize(positionFooter)
+					
+		});
+	</script>
+ -->
+	{{if eq .RunMode "dev"}}
+		{{template "debug.html" .}}
+	{{end}}
+</body>
+</html>

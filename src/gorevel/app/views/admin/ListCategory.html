@@ -1,0 +1,58 @@
+{{set . "title" "分类列表"}}
+{{template "admin/header.html" .}}
+
+<div class="row-fluid">
+	<div class="span3">
+	{{template "admin/sidebar.html" .}}
+	</div><!--/span-->
+
+	<div class="span9">
+		{{template "flash.html" .}}
+		<div class="page-header">
+			<h3>{{.title}}</h3>
+		</div>
+
+		<table class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>名称</th>
+					<th>说明</th>
+					<th>操作</th>
+				</tr>
+			 </thead>
+			{{range .categories}}
+				<tr id="{{.Id}}">
+					<td>{{.Id}}</td>
+					<td>{{.Name}}</td>
+					<td>{{.Intro}}</td>
+					<td>
+						<a href="{{url "Admin.EditCategory" .Id}}" class="btn btn-mini btn-info"><i class="icon-edit icon-white"></i> 编辑</a>
+						<button href="#" class="btn btn-mini btn-danger remove" id="{{.Id}}"><i class="icon-remove icon-white"></i> 删除</button>
+					</td>
+				</tr>
+			{{end}}
+		</table>
+	</div><!--/span-->
+</div><!--/row-->
+
+<script type="text/javascript">
+$(document).ready(function(){
+	var id, button;
+	$("button.remove").click(function () {
+		if (confirm("确定删除吗?")) {
+			var id = $(this).attr("id");
+
+			$.getJSON('category/'+ id + '/delete', function(data) {
+				if (data) {
+					$("tr#" + id).fadeOut("slow", function () {
+						$("tr#" + id).remove();
+					});
+				};
+			});
+		};
+	});
+});
+</script>
+
+{{template "admin/footer.html" .}}

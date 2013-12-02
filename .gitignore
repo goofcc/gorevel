@@ -20,3 +20,15 @@ _cgo_export.*
 _testmain.go
 
 *.exe
+
+# my ignore
+bin
+exe
+pkg
+src/github.com
+src/code.google.com
+*.log
+src/gorevel/public/upload
+test-results/
+tmp/
+routes/

@@ -1,0 +1,47 @@
+
+{{template "admin/header.html" .}}
+
+<div class="row-fluid">
+	<div class="span3">
+	{{template "admin/sidebar.html" .}}
+	</div><!--/span-->
+
+	<div class="span9">
+		{{template "flash.html" .}}
+		<div class="page-header">
+			<h3>{{.title}}</h3>
+		</div>
+		{{$category := .category}}
+		<form action="{{if $category}}{{url "Admin.EditCategoryPost" $category.Id}}{{else}}{{url "Admin.NewCategoryPost"}}{{end}}" method="POST" class="form-horizontal">
+			<input type="hidden" name="csrf_token" value="{{ .csrf_token }}" />
+			{{with $field := field "category.Name" .}}
+			<div class="control-group">
+				<label class="control-label" for="{{$field.Name}}">分类名称</label>
+				<div class="controls">
+					<input type="text" name="{{$field.Name}}"
+						value="{{if $category}}{{$category.Name}}{{else}}{{$field.Flash}}{{end}}">
+					<span class="text-error">{{$field.Error}}</span>
+				</div>
+			</div>
+			{{end}}
+
+			{{with $field := field "category.Intro" .}}
+			<div class="control-group">
+				<label class="control-label" for="{{$field.Name}}">说明</label>
+				<div class="controls">
+					<textarea name="{{$field.Name}}" rows="4" class="span8">{{if $category}}{{$category.Intro}}{{else}}{{$field.Flash}}{{end}}</textarea>
+					<span class="text-error">{{$field.Error}}</span>
+				</div>
+			</div>
+			{{end}}
+
+			<div class="control-group">
+				<div class="controls">
+					<button type="submit" class="btn btn-primary">提交分类</button>
+				</div>
+			</div>
+		</form>
+	</div><!--/span-->
+
+</div><!--/row-->
+{{template "admin/footer.html" .}}

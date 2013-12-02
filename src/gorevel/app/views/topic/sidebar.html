@@ -1,0 +1,44 @@
+
+<div class="well well-none">
+	<div class="btn-group">
+		<a href="{{url "Topic.New"}}" class="btn bun-small btn-success">发表新帖</a>
+		<button class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+			<span class="caret"></span>
+		</button>
+	</div>
+</div>
+
+<div class="well well-none">
+	<h3><small>热门分类</small></h3>
+	{{range .categories}}
+		<a href="{{url "Topic.Category" .Id}}" class="btn">{{.Name}}</a>
+	{{end}}
+</div>
+
+<div class="well well-none sidebar-nav">
+	<h3><small>友情社区</small></h3>
+	<hr class="pretty">
+	<a href="http://golangtc.com/" target="_blank" title="Golang中国">
+		<img src="http://gopher.qiniudn.com/static/img/golang-china.png?v=11" style="max-width: 180px;">
+	</a>
+
+	<hr class="pretty">
+	<a href="http://studygolang.com" target="_blank" title="Golang中文社区 | Go语言学习园地">
+		<img src="http://studygolang.com/static/img/text_logo.png" style="max-width: 180px;">
+	</a>
+
+	<hr class="pretty">
+	<h2 class="text-center"><a href="http://gowalker.org/" target="_blank" title="Go 步行者 - Go 项目 API 文档">Go 步行者
+	</a></h2>
+
+	<hr class="pretty">
+	<a href="http://bbs.mygolang.com/forum.php" target="_blank" title="Golang中文社区 Golang分享交流">
+		<img src="http://bbs.mygolang.com/static/image/common/logo.png" style="max-width: 180px;">
+	</a>
+
+	<hr class="pretty">
+	<h2 class="text-center"><a href="http://gobbs.domolo.com/" target="_blank" title="GoBbs论坛" style="color:#999999;">GoBbs论坛
+	</a></h2>
+	<hr class="pretty">
+
+</div>

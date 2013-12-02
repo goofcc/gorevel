@@ -1,0 +1,65 @@
+{{append . "moreScripts" "js/ckeditor/ckeditor.js"}}
+{{template "header.html" .}}
+
+<div class="container fixed">
+	<div class="row row-fixed">
+		<div class="span9">
+			{{template "flash.html" .}}
+			<div class="page-header">
+				<h3>{{.title}}</h3>
+			</div>
+			{{$topic := .topic}}
+			<form action="{{if $topic}}{{url "Topic.EditPost" $topic.Id}}{{else}}{{url "Topic.NewPost"}}{{end}}" method="POST" class="form-horizontal">
+				<input type="hidden" name="csrf_token" value="{{ .csrf_token }}" />
+				{{with $field := field "topic.Title" .}}
+				<div class="control-group topic-fixed">
+					<label class="control-label" for="{{$field.Name}}">标题</label>
+					<div class="controls">
+						<input class="input-xxlarge" type="text" name="{{$field.Name}}"
+							value="{{if $topic}}{{$topic.Title}}{{else}}{{$field.Flash}}{{end}}">
+						<span class="text-error">{{$field.Error}}</span>
+					</div>
+				</div>
+				{{end}}
+
+				{{$categories := .categories}}
+
+				{{with $field := field "topic.CategoryId" .}}
+				<div class="control-group topic-fixed">
+					<label class="control-label" for="{{$field.Name}}">分类</label>
+					<div class="controls">
+						<select name="{{$field.Name}}">
+							{{range $categories}}
+								<option value="{{.Id}}" {{if eq .Id $topic.CategoryId}} selected="selected"{{end}}>{{.Name}}</option>
+							{{end}}
+						</select>
+						<span class="text-error">{{$field.Error}}</span>
+					</div>
+				</div>
+				{{end}}
+
+				{{with $field := field "topic.Content" .}}
+				<div class="control-group topic-fixed">
+					<label class="control-label" for="{{$field.Name}}">内容</label>
+					<div class="controls">
+						<textarea class="ckeditor" name="{{$field.Name}}" class="span8">{{if $topic}}{{$topic.Content}}{{else}}{{$field.Flash}}{{end}}</textarea>
+						<span class="text-error">{{$field.Error}}</span>
+					</div>
+				</div>
+				{{end}}
+
+				<div class="control-group topic-fixed">
+					<div class="controls">
+						<button type="submit" class="btn btn-primary">提交帖子</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<div class="span3">
+			{{template "topic/sidebar.html" .}}
+		</div>
+	</div>
+</div> <!-- /container -->
+
+{{template "footer.html" .}}
