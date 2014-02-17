@@ -7,10 +7,10 @@
 			<h2>{{.title}}</h2>
 		</div>
 		{{template "flash.html" .}}
-		{{$user := .user}}
 
 		<form action="{{url "User.Edit"}}" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="csrf_token" value="{{ .csrf_token }}" />
+
 			<ul class="nav nav-tabs">
 				<li class="active">
 					<a href="#">头像设置</a>
@@ -21,21 +21,22 @@
 					<li>
 						<label>
 							<img class="img-rounded" src="/public/img/{{.}}">
-							<input style="margin-left: 16px;" type="radio" name="avatar" value="{{.}}"{{if $user.IsDefaultAvatar .}} checked{{end}}>
+							<input style="margin-left: 16px;" type="radio" name="avatar" value="{{.}}"{{if $.user.IsDefaultAvatar .}} checked{{end}}>
 						</label>
 					</li>
 				{{end}}
 			</ul>
 
 			<hr>上传头像
+
 			{{with $field := field "picture" .}}
 			<div class="control-group">
-				{{if $user.Avatar}}
-					<img class="img-rounded" src="{{$user.AvatarImgSrc}}">
+				{{if $.user.Avatar}}
+					<img class="img-rounded" src="{{$.user.AvatarImgSrc}}">
 				{{end}}
 				<div class="controls">
 					<div class="uploader" id="uniform-fileInput">
-						<input name="{{$field.Name}}" class="input-file uniform_on" id="{{$field.Name}}" type="file">
+						<input type="file" name="{{$field.Name}}" class="input-file uniform_on" id="{{$field.Name}}">
 					</div>
 					<span class="text-error">{{$field.Error}}</span>
 				</div>

@@ -1,6 +1,12 @@
 <ul class="nav nav-tabs m-bottom">
-	<li class="pull-right {{if eq .title "好帖推荐"}}active{{end}}"><a href="{{url "Topic.Good"}}">好帖推荐</a></li>
-	<li class="pull-right {{if eq .title "最多点击"}}active{{end}}"><a href="{{url "Topic.Hot"}}">最多点击</a></li>
-	<li class="pull-right {{if eq .title "最近发表"}}active{{end}}"><a href="{{url "Topic.Index"}}">最近发表</a></li>
+	<li class="pull-right {{if eq .title "好帖推荐"}}active{{end}}">
+		<a href="{{url "Topic.Good"}}">好帖推荐</a>
+	</li>
+	<li class="pull-right {{if eq .title "最多点击"}}active{{end}}">
+		<a href="{{url "Topic.Hot"}}">最多点击</a>
+	</li>
+	<li class="pull-right {{if eq .title "最近发表"}}active{{end}}">
+		<a href="{{url "Topic.Index"}}">最近发表</a>
+	</li>
 </ul>
 <div class="clearfix"></div>

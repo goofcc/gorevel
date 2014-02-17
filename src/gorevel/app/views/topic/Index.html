@@ -5,7 +5,7 @@
 	<div class="row row-fixed">
 		<div class="span9">
 			{{template "topic/nav.html" .}}
-			{{$user := .user}}
+
 			{{range .topics}}
 			<div class="media">
 				<a class="pull-left" href="#">
@@ -17,7 +17,7 @@
 					</span>
 					<h4 class="media-heading">
 						<a href="{{url "Topic.Show" .Id}}">{{.Title}}</a>
-						{{if eq $user.Id .User.Id}}<a href="{{url "Topic.Edit" .Id}}"><i class="icon-edit"></i></a>{{end}}
+						{{if eq .User.Id $.user.Id}}<a href="{{url "Topic.Edit" .Id}}"><i class="icon-edit"></i></a>{{end}}
 					</h4>
 					<span class="label">{{.Category.Name}}</span> ·
 					<span class="">{{.User.Name}}</span>
@@ -40,6 +40,6 @@
 			{{template "topic/sidebar.html" .}}
 		</div>
 	</div>
-</div> <!-- /container -->
+</div>
 
 {{template "footer.html" .}}

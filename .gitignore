@@ -29,6 +29,3 @@ src/github.com
 src/code.google.com
 *.log
 src/gorevel/public/upload
-test-results/
-tmp/
-routes/

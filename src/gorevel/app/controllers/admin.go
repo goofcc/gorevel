@@ -1,9 +1,8 @@
 package controllers
 
 import (
-	"fmt"
-	"github.com/coocood/qbs"
 	"github.com/robfig/revel"
+
 	"gorevel/app/models"
 	"gorevel/app/routes"
 )
@@ -12,100 +11,100 @@ type Admin struct {
 	Application
 }
 
-func (c *Admin) Index() revel.Result {
+func (c Admin) Index() revel.Result {
 	return c.Render()
 }
 
-func (c *Admin) ListUser() revel.Result {
-	var users []*models.User
-	c.q.FindAll(&users)
+func (c Admin) ListUser() revel.Result {
+	var users []models.User
+	engine.Find(&users)
 
 	return c.Render(users)
 }
 
-func (c *Admin) DeleteUser(id int64) revel.Result {
-	user := new(models.User)
-	user.Id = id
-	c.q.Delete(user)
+func (c Admin) DeleteUser(id int64) revel.Result {
+	aff, _ := engine.Id(id).Delete(&models.User{})
+	if aff > 0 {
+		return c.RenderJson(map[string]bool{"status": true})
+	}
 
-	return c.RenderJson([]byte("true"))
+	return c.RenderJson(map[string]bool{"status": false})
 }
 
-func (c *Admin) ListCategory() revel.Result {
-	categories := getCategories(c.q)
+func (c Admin) ListCategory() revel.Result {
+	categories := getCategories()
 
 	return c.Render(categories)
 }
 
-func (c *Admin) DeleteCategory(id int64) revel.Result {
-	category := new(models.Category)
-	category.Id = id
-	c.q.Delete(category)
+func (c Admin) DeleteCategory(id int64) revel.Result {
+	aff, _ := engine.Id(id).Delete(&models.Category{})
+	if aff > 0 {
+		return c.RenderJson(map[string]bool{"status": true})
+	}
 
-	return c.RenderJson([]byte("true"))
+	return c.RenderJson(map[string]bool{"status": false})
 }
 
-func (c *Admin) NewCategory() revel.Result {
+func (c Admin) NewCategory() revel.Result {
 	title := "新建分类"
 	return c.Render(title)
 }
 
-func (c *Admin) NewCategoryPost(category models.Category) revel.Result {
-	category.Validate(c.q, c.Validation)
+func (c Admin) NewCategoryPost(category models.Category) revel.Result {
+	category.Validate(c.Validation)
 	if c.Validation.HasErrors() {
 		c.Validation.Keep()
 		c.FlashParams()
 		return c.Redirect(routes.Admin.NewCategory())
 	}
 
-	if !category.Save(c.q) {
+	aff, _ := engine.Insert(&category)
+	if aff == 0 {
 		c.Flash.Error("添加分类失败")
 	}
 
 	return c.Redirect(routes.Admin.ListCategory())
 }
 
-func (c *Admin) EditCategory(id int64) revel.Result {
+func (c Admin) EditCategory(id int64) revel.Result {
 	title := "编辑分类"
 
-	category := findCategoryById(c.q, id)
+	var category models.Category
+	engine.Id(id).Get(&category)
+
 	if category.Id == 0 {
 		return c.NotFound("分类不存在")
 	}
 
-	c.Render(title, category)
+	c.Vars(Vars{
+		"title":    title,
+		"category": category,
+	})
 
 	return c.RenderTemplate("admin/NewCategory.html")
 }
 
-func (c *Admin) EditCategoryPost(id int64, category models.Category) revel.Result {
+func (c Admin) EditCategoryPost(id int64, category models.Category) revel.Result {
 	category.Id = id
-	category.Validate(c.q, c.Validation)
+	category.Validate(c.Validation)
 	if c.Validation.HasErrors() {
 		c.Validation.Keep()
 		c.FlashParams()
 		return c.Redirect(routes.Admin.NewCategory())
 	}
 
-	if !category.Save(c.q) {
+	aff, _ := engine.Id(id).Update(&category)
+	if aff == 0 {
 		c.Flash.Error("编辑分类失败")
 	}
 
 	return c.Redirect(routes.Admin.ListCategory())
 }
 
-func getCategories(q *qbs.Qbs) []*models.Category {
-	var categories []*models.Category
-	if err := q.FindAll(&categories); err != nil {
-		fmt.Println(err)
-	}
+func getCategories() []models.Category {
+	var categories []models.Category
+	engine.Find(&categories)
 
 	return categories
-}
-
-func findCategoryById(q *qbs.Qbs, id int64) *models.Category {
-	category := new(models.Category)
-	q.WhereEqual("id", id).Find(category)
-
-	return category
 }

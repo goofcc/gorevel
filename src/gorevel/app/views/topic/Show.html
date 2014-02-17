@@ -6,7 +6,7 @@
 		<div class="span9">
 			<div class="well well-white">
 				<div class="media border-none">
-					{{$user := .user}}
+
 					{{with .topic}}
 					<a class="pull-left" href="#">
 						<img src="{{.User.AvatarImgSrc}}" class="img-rounded"></img>
@@ -15,7 +15,11 @@
 						<span class="time pull-right">
 							<abbr class="timeago" title="{{datetime .Created}}+00:00"></abbr>
 						</span>
-						<h4 class="media-heading">{{.Title}} {{if eq $user.Id .User.Id}}<a href="{{url "Topic.Edit" .Id}}"><i class="icon-edit"></i></a>{{end}}</h4>
+						<h4 class="media-heading">{{.Title}} 
+							{{if eq .User.Id $.user.Id}}
+							<a href="{{url "Topic.Edit" .Id}}"><i class="icon-edit"></i></a>
+							{{end}}
+						</h4>
 						<span class="label">{{.Category.Name}}</span> • 
 						<span class="">{{.User.Name}}</span>
 						{{if .Hits}} • <span class="">{{.Hits}}</span> 次浏览{{end}}

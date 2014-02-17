@@ -1,38 +1,37 @@
 package controllers
 
 import (
-	"code.google.com/p/go-uuid/uuid"
 	"fmt"
-	"github.com/coocood/qbs"
-	"github.com/disintegration/imaging"
+
 	"github.com/robfig/revel"
+
 	"gorevel/app/models"
 	"gorevel/app/routes"
-	"image"
-	"strings"
 )
 
 type User struct {
 	Application
 }
 
-func (c *User) Signup() revel.Result {
+func (c User) Signup() revel.Result {
 	return c.Render()
 }
 
-func (c *User) SignupPost(user models.User) revel.Result {
-	user.Validate(c.q, c.Validation)
+func (c User) SignupPost(user models.User) revel.Result {
+	user.Validate(c.Validation)
 	if c.Validation.HasErrors() {
 		c.Validation.Keep()
 		c.FlashParams()
 		return c.Redirect(routes.User.Signup())
 	}
 
-	user.Type = MemberGroup
-	user.Avatar = defaultAvatar
-	user.ValidateCode = strings.Replace(uuid.NewUUID().String(), "-", "", -1)
+	user.Type = MEMBER_GROUP
+	user.Avatar = models.DefaultAvatar
+	user.ValidateCode = uuidName()
+	user.HashedPassword = models.EncryptPassword(user.Password)
 
-	if !user.Save(c.q) {
+	aff, _ := engine.Insert(&user)
+	if aff == 0 {
 		c.Flash.Error("注册用户失败")
 		return c.Redirect(routes.User.Signup())
 	}
@@ -43,19 +42,19 @@ func (c *User) SignupPost(user models.User) revel.Result {
 
 	c.Flash.Success(fmt.Sprintf("%s 注册成功，请到您的邮箱 %s 激活账号！", user.Name, user.Email))
 
-	perm := new(models.Permissions)
-	perm.UserId = user.Id
-	perm.Perm = MemberGroup
-	perm.Save(c.q)
+	engine.Insert(&models.Permissions{
+		UserId: user.Id,
+		Perm:   MEMBER_GROUP,
+	})
 
 	return c.Redirect(routes.User.Signin())
 }
 
-func (c *User) Signin() revel.Result {
+func (c User) Signin() revel.Result {
 	return c.Render()
 }
 
-func (c *User) SigninPost(name, password string) revel.Result {
+func (c User) SigninPost(name, password string) revel.Result {
 	c.Validation.Required(name).Message("请输入用户名")
 	c.Validation.Required(password).Message("请输入密码")
 
@@ -65,10 +64,8 @@ func (c *User) SigninPost(name, password string) revel.Result {
 		return c.Redirect(routes.User.Signin())
 	}
 
-	user := new(models.User)
-	condition := qbs.NewCondition("name = ?", name).
-		And("hashed_password = ?", models.EncryptPassword(password))
-	c.q.Condition(condition).Find(user)
+	var user models.User
+	engine.Where("name = ? AND hashed_password = ?", name, models.EncryptPassword(password)).Get(&user)
 
 	if user.Id == 0 {
 		c.Validation.Keep()
@@ -95,7 +92,7 @@ func (c *User) SigninPost(name, password string) revel.Result {
 	return c.Redirect(routes.App.Index())
 }
 
-func (c *User) Signout() revel.Result {
+func (c User) Signout() revel.Result {
 	for k := range c.Session {
 		delete(c.Session, k)
 	}
@@ -103,81 +100,64 @@ func (c *User) Signout() revel.Result {
 	return c.Redirect(routes.App.Index())
 }
 
-func (c *User) Edit() revel.Result {
-	id := c.RenderArgs["user"].(*models.User).Id
-	user := findUserById(c.q, id)
-	if user.Id == 0 {
-		return c.NotFound("用户不存在")
-	}
-
-	return c.Render(user, avatars)
+func (c User) Edit() revel.Result {
+	avatars := models.Avatars
+	return c.Render(avatars)
 }
 
-func (c *User) EditPost(avatar string) revel.Result {
-	id := c.RenderArgs["user"].(*models.User).Id
-	checkFileExt(c.Controller, imageExts, "picture", "Only image")
-	user := findUserById(c.q, id)
-	if user.Id == 0 {
-		return c.NotFound("用户不存在")
-	}
-
+func (c User) EditPost(avatar string) revel.Result {
 	if c.Validation.HasErrors() {
 		c.Validation.Keep()
 		c.FlashParams()
 		return c.Redirect(routes.User.Edit())
 	}
 
-	if ok, _ := getFileExt(c.Request, "picture"); ok {
-		picture := saveFile(c.Request, "picture")
-		src, _ := imaging.Open(uploadPath + picture)
-		var dst *image.NRGBA
-
-		dst = imaging.Thumbnail(src, 48, 48, imaging.CatmullRom)
-		avatar = "thumb" + picture
-		imaging.Save(dst, uploadPath+avatar)
-		deleteFile(picture)
+	var user models.User
+	has, _ := engine.Id(c.userId).Get(&user)
+	if !has {
+		return c.NotFound("用户不存在")
 	}
 
-	if avatar != "" {
-		if strings.HasPrefix(user.Avatar, "thumb") {
-			deleteFile(user.Avatar)
+	file, header, err := c.Request.FormFile("picture")
+	if err == nil {
+		defer file.Close()
+		if ok := checkFileExt(c.Validation, header, imageExts, "picture", "Only image"); ok {
+			fileName := uuidFileName(header.Filename)
+			filePath := UPLOAD_PATH + fileName
+
+			saveFile(&file, filePath)
+			thumbFile(filePath)
+
+			deleteFile(UPLOAD_PATH + user.Avatar)
+			user.Avatar = fileName
 		}
+	} else if avatar != "" {
+		deleteFile(UPLOAD_PATH + user.Avatar)
 		user.Avatar = avatar
 	}
 
-	if user.Save(c.q) {
+	aff, _ := engine.Id(c.userId).Cols("avatar").Update(&user)
+	if aff > 0 {
 		c.Flash.Success("保存成功")
 	} else {
-		c.Flash.Error("保存信息失败")
+		c.Flash.Error("保存失败")
 	}
 
 	return c.Redirect(routes.User.Edit())
 }
 
-func (c *User) Validate(code string) revel.Result {
-	user := findUserByCode(c.q, code)
-	if user.Id == 0 {
+func (c User) Validate(code string) revel.Result {
+	var user models.User
+	has, _ := engine.Where("code = ?", code).Get(&user)
+
+	if !has {
 		return c.NotFound("用户不存在或校验码错误")
 	}
 
 	user.IsActive = true
-	user.Save(c.q)
+	engine.Cols("is_active").Update(&user)
 
 	c.Flash.Success("您的账号成功激活，请登录！")
 
 	return c.Redirect(routes.User.Signin())
-}
-
-func findUserById(q *qbs.Qbs, id int64) *models.User {
-	user := new(models.User)
-	q.WhereEqual("id", id).Find(user)
-
-	return user
-}
-
-func findUserByCode(q *qbs.Qbs, code string) *models.User {
-	user := new(models.User)
-	q.WhereEqual("validate_code", code).Find(user)
-
-	return user
 }

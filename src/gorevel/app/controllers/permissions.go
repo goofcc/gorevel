@@ -2,25 +2,25 @@ package controllers
 
 const (
 	_ = iota
-	AdminGroup
-	MemberGroup
+	ADMIN_GROUP
+	MEMBER_GROUP
 )
 
 var Permissions = map[string]int{
 	// Admin
-	"Admin.Index":          AdminGroup,
-	"Admin.ListUser":       AdminGroup,
-	"Admin.DeleteUser":     AdminGroup,
-	"Admin.ListCategory":   AdminGroup,
-	"Admin.DeleteCategory": AdminGroup,
-	"Admin.NewCategory":    AdminGroup,
-	"Admin.EditCategory":   AdminGroup,
+	"Admin.Index":          ADMIN_GROUP,
+	"Admin.ListUser":       ADMIN_GROUP,
+	"Admin.DeleteUser":     ADMIN_GROUP,
+	"Admin.ListCategory":   ADMIN_GROUP,
+	"Admin.DeleteCategory": ADMIN_GROUP,
+	"Admin.NewCategory":    ADMIN_GROUP,
+	"Admin.EditCategory":   ADMIN_GROUP,
 
 	// User
-	"User.Edit": MemberGroup,
+	"User.Edit": MEMBER_GROUP,
 
 	// Topic
-	"Topic.New":   MemberGroup,
-	"Topic.Edit":  MemberGroup,
-	"Topic.Reply": MemberGroup,
+	"Topic.New":   MEMBER_GROUP,
+	"Topic.Edit":  MEMBER_GROUP,
+	"Topic.Reply": MEMBER_GROUP,
 }

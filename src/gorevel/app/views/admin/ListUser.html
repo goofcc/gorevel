@@ -46,7 +46,7 @@ $(document).ready(function(){
 			var id = $(this).attr("id");
 			console.log('user/'+ id + '/delete')
 			$.getJSON('user/'+ id + '/delete', function(data) {
-				if (data) {
+				if (data.status) {
 					$("tr#" + id).fadeOut("slow", function () {
 						$("tr#" + id).remove();
 					});

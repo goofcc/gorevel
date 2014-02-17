@@ -1,52 +1,37 @@
 package models
 
 import (
-	"fmt"
-	"github.com/coocood/qbs"
-	"github.com/robfig/revel"
 	"time"
+
+	"github.com/robfig/revel"
 )
 
 type Category struct {
 	Id      int64
-	Name    string `qbs:"size:32,unique,notnull"`
-	Intro   string `qbs:"size:255"`
-	Created time.Time
+	Name    string
+	Intro   string
+	Created time.Time `xorm:"created"`
 }
 
-func (category *Category) Validate(q *qbs.Qbs, v *revel.Validation) {
-	valid := v.Required(category.Name).Message("请输入名称")
+func (category Category) Validate(v *revel.Validation) {
+	v.Required(category.Name).Message("请输入名称")
 
-	if valid.Ok {
-		if category.HasName(q) {
-			err := &revel.ValidationError{
-				Message: "该名称已存在",
-				Key:     "category.Name",
-			}
-			valid.Error = err
-			valid.Ok = false
-
-			v.Errors = append(v.Errors, err)
+	if category.HasName() {
+		err := &revel.ValidationError{
+			Message: "名称已存在",
+			Key:     "category.Name",
 		}
+		v.Errors = append(v.Errors, err)
 	}
 }
 
-func (c *Category) HasName(q *qbs.Qbs) bool {
-	category := new(Category)
-	condition := qbs.NewCondition("name = ?", c.Name)
+func (c Category) HasName() bool {
+	var category Category
 	if c.Id > 0 {
-		condition = qbs.NewCondition("name = ?", c.Name).And("id != ?", c.Id)
+		Engine.Where("name = ? AND id != ?", c.Name, c.Id).Get(&category)
+	} else {
+		Engine.Where("name = ?", c.Name).Get(&category)
 	}
-	q.Condition(condition).Find(category)
 
 	return category.Id > 0
-}
-
-func (c *Category) Save(q *qbs.Qbs) bool {
-	_, err := q.Save(c)
-	if err != nil {
-		fmt.Println(err)
-		return false
-	}
-	return true
 }

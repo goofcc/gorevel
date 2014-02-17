@@ -7,8 +7,9 @@
 			<h2>{{.title}}</h2>
 		</div>
 		{{template "flash.html" .}}
-		<form action="{{url "User.SigninPost"}}" method="POST" class="form-horizontal">
+		<form action="{{url "User.Signin"}}" method="POST" class="form-horizontal">
 			<input type="hidden" name="csrf_token" value="{{ .csrf_token }}" />
+
 			{{with $field := field "name" .}}
 			<div class="control-group">
 				<label class="control-label" for="{{$field.Name}}">用户名</label>

@@ -1,4 +1,4 @@
-package models
+package controllers
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	PagesPerView = 11 //每次显示的页码数
-	ItemsPerPage = 10 //每页几条记录
+	PagesPerView = 11 //最大页码数
+	ItemsPerPage = 10 //每页记录数
 )
 
 type Pagination struct {

@@ -5,7 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="keywords" content="Revel,Revel社区,Revel中文社区,Revel论坛,Revel中国,Revel框架,Go框架,GoWeb框架,GoRevel学习,gorevel社区,gorevel中文社区,Golang,Go社区,Golang中文,Go语言学习,Go语言,学习Go语言,Golang 中国,Golang中国,Golang China, Go语言论坛, Revel,revel,gorevel">
+	<meta name="keywords" content="Revel,Revel社区,Revel中文社区,Revel论坛,Revel中国,Revel框架,Go框架,GoWeb框架,GoRevel学习,gorevel社区,gorevel中文社区,Golang,Go社区,Golang中文,Go语言学习,Go语言,学习Go语言, Go语言论坛, Revel,revel,gorevel">
 	<meta name="description" content="Revel中国,Revel中文社区,中国 Revel社区，Go语言学习,Go语言爱好者,Revel,revel,gorevel。">
 	<!-- <link rel="shortcut icon" href="/public/img/favicon.ico"> -->
 	<link rel="stylesheet" type="text/css" href="/public/css/bootstrap.min.css">
@@ -59,7 +59,9 @@
 					<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i> {{.user.Name}}<b class="caret"></b></a>
 					<ul class="dropdown-menu" style="max-width:10px;">
-						{{if .user.IsAdmin}}<li><a href="{{url "Admin.Index"}}"><i class="icon-cog"></i>后台管理</a></li>{{end}}
+						{{if .user.IsAdmin}}
+							<li><a href="{{url "Admin.Index"}}"><i class="icon-cog"></i>后台管理</a></li>
+						{{end}}
 						<li><a href="{{url "User.Edit"}}"><i class="icon-edit"></i>个人信息</a></li>
 						<li><a href="{{url "User.Signout"}}"><i class="icon-off"></i>退出</a></li>
 					</ul>
