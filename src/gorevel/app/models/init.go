@@ -61,7 +61,7 @@ func Init() {
 		Engine.Insert(&User{
 			Name:           "admin",
 			Email:          "admin@admin.com",
-			Avatar:         "gopher_teal.jpg",
+			Avatar:         DefaultAvatar,
 			Type:           1,
 			IsActive:       true,
 			HashedPassword: EncryptPassword("123"),

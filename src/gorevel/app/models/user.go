@@ -71,16 +71,16 @@ func (user User) Validate(v *revel.Validation) {
 
 func (u User) HasName() bool {
 	var user User
-	Engine.Where("name = ?", u.Name).Get(&user)
+	has, _ := Engine.Where("name = ?", u.Name).Get(&user)
 
-	return user.Id > 0
+	return has
 }
 
 func (u User) HasEmail() bool {
 	var user User
-	Engine.Where("email = ?", u.Email).Get(&user)
+	has, _ := Engine.Where("email = ?", u.Email).Get(&user)
 
-	return user.Id > 0
+	return has
 }
 
 // 加密密码,转成md5

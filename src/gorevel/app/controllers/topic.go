@@ -100,9 +100,9 @@ func (c Topic) NewPost(topic models.Topic, category int64) revel.Result {
 // 帖子详细
 func (c Topic) Show(id int64) revel.Result {
 	topic := new(models.Topic)
-	engine.Id(id).Get(topic)
+	has, _ := engine.Id(id).Get(topic)
 
-	if topic.Id == 0 {
+	if !has {
 		return c.NotFound("帖子不存在")
 	}
 

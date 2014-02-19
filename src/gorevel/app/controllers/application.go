@@ -74,9 +74,9 @@ func (c *Application) connected() *models.User {
 
 func (c *Application) getUser(username string) *models.User {
 	var user models.User
-	engine.Where("name = ?", username).Get(&user)
+	has, _ := engine.Where("name = ?", username).Get(&user)
 
-	if user.Id == 0 {
+	if !has {
 		return nil
 	}
 

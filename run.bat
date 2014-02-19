@@ -1,9 +1,12 @@
+
 @echo off
 
 set OLDGOPATH=%GOPATH%
 set GOPATH=%cd%
 
-:: 可选参数：生产模式[prod]，端口[8080]
 bin\revel run gorevel
+:: 可选参数：[dev]/[prod] + [port]
+:: bin/revel run gorevel dev 3000
+:: bin/revel run gorevel prod 3000
 
 set GOPATH=%OLDGOPATH%

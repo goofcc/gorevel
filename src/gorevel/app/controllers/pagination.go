@@ -18,11 +18,11 @@ type Pagination struct {
 }
 
 func NewPagination(page int, rows int, url string) *Pagination {
-	p := Pagination{}
-	p.page = page
-	p.rows = rows
-	p.url = url
-	return &p
+	return &Pagination{
+		page: page,
+		rows: rows,
+		url:  url,
+	}
 }
 
 func (p *Pagination) Html() template.HTML {
