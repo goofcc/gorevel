@@ -2,6 +2,7 @@ package models
 
 import (
 	"time"
+	"unicode/utf8"
 
 	"github.com/robfig/revel"
 )
@@ -21,7 +22,13 @@ type Topic struct {
 
 func (topic Topic) Validate(v *revel.Validation) {
 	v.Required(topic.Title).Message("请输入标题")
-	v.MaxSize(topic.Title, 105).Message("最多35个字")
+	if utf8.RuneCountInString(topic.Title) > 35 {
+		err := &revel.ValidationError{
+			Message: "最多35个字",
+			Key:     "topic.Title",
+		}
+		v.Errors = append(v.Errors, err)
+	}
 	v.Required(topic.Category).Message("请选择分类")
 	v.Required(topic.Content).Message("帖子内容不能为空")
 }

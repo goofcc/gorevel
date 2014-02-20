@@ -18,13 +18,13 @@ import (
 	"gorevel/app/routes"
 )
 
-type Vars map[string]interface{}
-
 var (
 	engine      *xorm.Engine
 	UPLOAD_PATH string
 	imageExts   string = ".jpg.jpeg.png"
 )
+
+type Vars map[string]interface{}
 
 type Application struct {
 	*revel.Controller
@@ -111,9 +111,9 @@ func thumbFile(filePath string) {
 	imaging.Save(dst, filePath)
 }
 
-func deleteFile(filepath string) error {
-	if fileExist(filepath) {
-		err := os.Remove(filepath)
+func deleteFile(filePath string) error {
+	if fileExist(filePath) {
+		err := os.Remove(filePath)
 		if err != nil {
 			revel.ERROR.Println(err)
 		}
@@ -123,8 +123,8 @@ func deleteFile(filepath string) error {
 	return nil
 }
 
-func fileExist(filepath string) bool {
-	_, err := os.Stat(filepath)
+func fileExist(filePath string) bool {
+	_, err := os.Stat(filePath)
 	return err == nil || os.IsExist(err)
 }
 

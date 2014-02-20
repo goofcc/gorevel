@@ -9,6 +9,11 @@ import (
 	"github.com/robfig/revel"
 )
 
+var (
+	Engine *xorm.Engine
+	Smtp   SmtpType
+)
+
 type SmtpType struct {
 	Username string
 	Password string
@@ -16,11 +21,6 @@ type SmtpType struct {
 	Address  string
 	From     string
 }
-
-var (
-	Engine *xorm.Engine
-	Smtp   SmtpType
-)
 
 func init() {
 	revel.OnAppStart(Init)

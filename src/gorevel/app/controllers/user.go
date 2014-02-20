@@ -84,8 +84,7 @@ func (c User) SigninPost(name, password string) revel.Result {
 
 	c.Session["user"] = name
 
-	preUrl, ok := c.Session["preUrl"]
-	if ok {
+	if preUrl, ok := c.Session["preUrl"]; ok {
 		return c.Redirect(preUrl)
 	}
 
