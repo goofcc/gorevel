@@ -42,7 +42,6 @@ $(document).ready(function(){
 	$("button.remove").click(function () {
 		if (confirm("确定删除吗?")) {
 			var id = $(this).attr("id");
-
 			$.getJSON('category/'+ id + '/delete', function(data) {
 				if (data.status) {
 					$("tr#" + id).fadeOut("slow", function () {

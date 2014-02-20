@@ -8,6 +8,6 @@ type App struct {
 	Application
 }
 
-func (c *App) Index() revel.Result {
+func (c App) Index() revel.Result {
 	return c.Render()
 }

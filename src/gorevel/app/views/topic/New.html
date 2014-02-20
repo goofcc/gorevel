@@ -30,7 +30,7 @@
 						<select name="{{$field.Name}}">
 							{{range $.categories}}
 								<option value="{{.Id}}" 
-								{{if $.errors}}{if eqis .Id $field.Flash}} selected="selected"{else if eq .Id $.topic.Category.Id}} selected="selected"{{end}}>
+								{{if $.errors}}{{if eqis .Id $field.Flash}} selected="selected"{{end}}{{else if eq .Id $.topic.Category.Id}} selected="selected"{{end}}>
 								{{.Name}}
 								</option>
 							{{end}}

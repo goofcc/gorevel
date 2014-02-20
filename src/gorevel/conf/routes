@@ -18,6 +18,7 @@ GET     /user/validate/:code                    User.Validate
 GET     /admin                                  Admin.Index
 GET     /admin/users                            Admin.ListUser
 GET     /admin/user/:id/delete                  Admin.DeleteUser
+GET     /admin/user/:id/activate                Admin.ActivateUser
 
 GET     /admin/category                         Admin.ListCategory
 GET     /admin/category/new                     Admin.NewCategory

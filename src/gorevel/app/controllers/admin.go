@@ -31,6 +31,15 @@ func (c Admin) DeleteUser(id int64) revel.Result {
 	return c.RenderJson(map[string]bool{"status": false})
 }
 
+func (c Admin) ActivateUser(id int64) revel.Result {
+	aff, _ := engine.Id(id).Cols("is_active").Update(&models.User{IsActive: true})
+	if aff > 0 {
+		return c.RenderJson(map[string]bool{"status": true})
+	}
+
+	return c.RenderJson(map[string]bool{"status": false})
+}
+
 func (c Admin) ListCategory() revel.Result {
 	categories := getCategories()
 

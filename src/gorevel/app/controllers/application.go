@@ -50,8 +50,7 @@ func (c *Application) injector() revel.Result {
 			return c.Redirect(routes.User.Signin())
 		} else {
 			perm := user.GetPermissions()
-			_, ok := perm[value]
-			if !ok {
+			if _, ok := perm[value]; !ok {
 				return c.Forbidden("抱歉，您没有得到授权！")
 			}
 		}
@@ -113,13 +112,20 @@ func thumbFile(filePath string) {
 }
 
 func deleteFile(filepath string) error {
-	err := os.Remove(filepath)
-
-	if err != nil {
-		revel.ERROR.Println(err)
+	if fileExist(filepath) {
+		err := os.Remove(filepath)
+		if err != nil {
+			revel.ERROR.Println(err)
+		}
+		return err
 	}
 
-	return err
+	return nil
+}
+
+func fileExist(filepath string) bool {
+	_, err := os.Stat(filepath)
+	return err == nil || os.IsExist(err)
 }
 
 func checkFileExt(v *revel.Validation, header *multipart.FileHeader, fileExts, formField, message string) bool {

@@ -139,15 +139,13 @@ func (c Topic) Reply(id int64, content string) revel.Result {
 
 func (c Topic) Edit(id int64) revel.Result {
 	title := "编辑帖子"
+	categories := getCategories()
 
 	var topic models.Topic
 	has, _ := engine.Id(id).Get(&topic)
-
 	if !has {
 		return c.NotFound("帖子不存在")
 	}
-
-	categories := getCategories()
 
 	c.Vars(Vars{
 		"title":      title,

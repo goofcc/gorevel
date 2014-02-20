@@ -4,7 +4,7 @@
 <div class="row-fluid">
 	<div class="span3">
 	{{template "admin/sidebar.html" .}}
-	</div><!--/span-->
+	</div>
 
 	<div class="span9">
 		{{template "flash.html" .}}
@@ -28,15 +28,19 @@
 					<td>{{.Name}}</td>
 					<td>{{.Email}}</td>
 					<td>{{datetime .Created}}</td>
-					<td>{{if .IsActive}}<i class="icon-ok"></i>{{else}}<i class="icon-remove"></i>{{end}}</td>
-					<td>
-						<button href="#" class="btn btn-mini btn-danger remove" id="{{.Id}}"><i class="icon-remove icon-white"></i> 删除</button>
+					<td>{{if .IsActive}}
+						<i class="icon-ok"></i>
+						{{else}}
+						<button href="#" class="btn btn-mini btn-success activate" id="{{.Id}}"><i class="icon-ok-circle icon-white"></i> 激活</button>
+						{{end}}
+					</td>
+					<td><button href="#" class="btn btn-mini btn-danger remove" id="{{.Id}}"><i class="icon-remove icon-white"></i> 删除</button>
 					</td>
 				</tr>
 			{{end}}
 		</table>
-	</div><!--/span-->
-</div><!--/row-->
+	</div>
+</div>
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -44,7 +48,6 @@ $(document).ready(function(){
 	$("button.remove").click(function () {
 		if (confirm("确定删除吗?")) {
 			var id = $(this).attr("id");
-			console.log('user/'+ id + '/delete')
 			$.getJSON('user/'+ id + '/delete', function(data) {
 				if (data.status) {
 					$("tr#" + id).fadeOut("slow", function () {
@@ -53,6 +56,14 @@ $(document).ready(function(){
 				};
 			});
 		};
+	});
+
+	$("button.activate").click(function () {
+		var id = $(this).attr("id");
+		var me = this;
+		$.getJSON('user/'+ id + '/activate', function(data) {
+			$(me).replaceWith("<i class=\"icon-ok\"></i>");
+		});
 	});
 });
 </script>
