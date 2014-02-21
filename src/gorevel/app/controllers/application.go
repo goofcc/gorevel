@@ -37,8 +37,6 @@ func (c *Application) injector() revel.Result {
 	if user != nil {
 		c.RenderArgs["user"] = user
 		c.userId = user.Id
-	} else {
-		c.userId = 0
 	}
 
 	// 检查是否需要授权

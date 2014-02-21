@@ -80,9 +80,8 @@ func (c Admin) EditCategory(id int64) revel.Result {
 	title := "编辑分类"
 
 	var category models.Category
-	engine.Id(id).Get(&category)
-
-	if category.Id == 0 {
+	has, _ := engine.Id(id).Get(&category)
+	if !has {
 		return c.NotFound("分类不存在")
 	}
 

@@ -11,15 +11,16 @@
 		<div class="page-header">
 			<h3>{{.title}}</h3>
 		</div>
-		{{$category := .category}}
-		<form action="{{if $category}}{{url "Admin.EditCategoryPost" $category.Id}}{{else}}{{url "Admin.NewCategoryPost"}}{{end}}" method="POST" class="form-horizontal">
+
+		<form action="{{if $.category}}{{url "Admin.EditCategory" $.category.Id}}{{else}}{{url "Admin.NewCategory"}}{{end}}" method="POST" class="form-horizontal">
 			<input type="hidden" name="csrf_token" value="{{ .csrf_token }}" />
+
 			{{with $field := field "category.Name" .}}
 			<div class="control-group">
 				<label class="control-label" for="{{$field.Name}}">分类名称</label>
 				<div class="controls">
 					<input type="text" name="{{$field.Name}}"
-						value="{{if $category}}{{$category.Name}}{{else}}{{$field.Flash}}{{end}}">
+						value="{{if $.errors}}{{$field.Flash}}{{else if $.category}}{{$.category.Name}}{{end}}">
 					<span class="text-error">{{$field.Error}}</span>
 				</div>
 			</div>
@@ -29,7 +30,7 @@
 			<div class="control-group">
 				<label class="control-label" for="{{$field.Name}}">说明</label>
 				<div class="controls">
-					<textarea name="{{$field.Name}}" rows="4" class="span8">{{if $category}}{{$category.Intro}}{{else}}{{$field.Flash}}{{end}}</textarea>
+					<textarea name="{{$field.Name}}" rows="4" class="span8">{{if $.errors}}{{$field.Flash}}{{else if $.category}}{{$.category.Intro}}{{end}}</textarea>
 					<span class="text-error">{{$field.Error}}</span>
 				</div>
 			</div>
