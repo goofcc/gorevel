@@ -11,8 +11,8 @@ type Topic struct {
 	Id       int64
 	Title    string
 	Content  string   `xorm:"text"`
-	Category Category `xorm:"category_id"`
-	User     User     `xorm:"user_id"`
+	Category Category `xorm:"category_id bigint"`
+	User     User     `xorm:"user_id bigint"`
 	Hits     int
 	Replies  int
 	Good     bool
