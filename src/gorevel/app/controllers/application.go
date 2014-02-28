@@ -109,11 +109,9 @@ func thumbFile(filePath string) {
 
 func deleteFile(filePath string) error {
 	if fileExist(filePath) {
-		err := os.Remove(filePath)
-		if err != nil {
+		if err := os.Remove(filePath); err != nil {
 			revel.ERROR.Println(err)
 		}
-		return err
 	}
 
 	return nil

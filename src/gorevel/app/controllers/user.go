@@ -65,9 +65,8 @@ func (c User) SigninPost(name, password string) revel.Result {
 	}
 
 	var user models.User
-	engine.Where("name = ? AND hashed_password = ?", name, models.EncryptPassword(password)).Get(&user)
-
-	if user.Id == 0 {
+	has, _ := engine.Where("name = ? AND hashed_password = ?", name, models.EncryptPassword(password)).Get(&user)
+	if !has {
 		c.Validation.Keep()
 		c.FlashParams()
 		c.Flash.Out["user"] = name

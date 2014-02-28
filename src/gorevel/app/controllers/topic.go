@@ -101,7 +101,6 @@ func (c Topic) NewPost(topic models.Topic, category int64) revel.Result {
 func (c Topic) Show(id int64) revel.Result {
 	topic := new(models.Topic)
 	has, _ := engine.Id(id).Get(topic)
-
 	if !has {
 		return c.NotFound("帖子不存在")
 	}
@@ -130,6 +129,7 @@ func (c Topic) Reply(id int64, content string) revel.Result {
 		User:    models.User{Id: c.user().Id},
 		Content: content,
 	})
+
 	if aff == 0 {
 		c.Flash.Error("发表回复失败")
 	}
