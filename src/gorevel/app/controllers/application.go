@@ -28,15 +28,13 @@ type Vars map[string]interface{}
 
 type Application struct {
 	*revel.Controller
-	userId int64
 }
 
-func (c *Application) injector() revel.Result {
+func (c *Application) checkUser() revel.Result {
 	c.RenderArgs["active"] = c.Name
-	user := c.connected()
+	user := c.user()
 	if user != nil {
 		c.RenderArgs["user"] = user
-		c.userId = user.Id
 	}
 
 	// 检查是否需要授权
@@ -57,7 +55,7 @@ func (c *Application) injector() revel.Result {
 	return nil
 }
 
-func (c *Application) connected() *models.User {
+func (c *Application) user() *models.User {
 	if c.RenderArgs["user"] != nil {
 		return c.RenderArgs["user"].(*models.User)
 	}
@@ -80,8 +78,8 @@ func (c *Application) getUser(username string) *models.User {
 	return &user
 }
 
-func (c *Application) Vars(args Vars) {
-	for k, v := range args {
+func (c *Application) vars(vars Vars) {
+	for k, v := range vars {
 		c.RenderArgs[k] = v
 	}
 }

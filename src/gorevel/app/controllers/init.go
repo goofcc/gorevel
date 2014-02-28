@@ -10,7 +10,7 @@ import (
 
 func init() {
 	revel.OnAppStart(Init)
-	revel.InterceptMethod((*Application).injector, revel.BEFORE)
+	revel.InterceptMethod((*Application).checkUser, revel.BEFORE)
 
 	revel.TemplateFuncs["eqis"] = func(a int64, b string) bool {
 		s := strconv.FormatInt(a, 10)

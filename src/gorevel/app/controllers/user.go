@@ -112,7 +112,7 @@ func (c User) EditPost(avatar string) revel.Result {
 	}
 
 	var user models.User
-	has, _ := engine.Id(c.userId).Get(&user)
+	has, _ := engine.Id(c.user().Id).Get(&user)
 	if !has {
 		return c.NotFound("用户不存在")
 	}
@@ -135,7 +135,7 @@ func (c User) EditPost(avatar string) revel.Result {
 		user.Avatar = avatar
 	}
 
-	aff, _ := engine.Id(c.userId).Cols("avatar").Update(&user)
+	aff, _ := engine.Id(c.user().Id).Cols("avatar").Update(&user)
 	if aff > 0 {
 		c.Flash.Success("保存成功")
 	} else {

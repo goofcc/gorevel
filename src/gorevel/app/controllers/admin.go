@@ -85,7 +85,7 @@ func (c Admin) EditCategory(id int64) revel.Result {
 		return c.NotFound("分类不存在")
 	}
 
-	c.Vars(Vars{
+	c.vars(Vars{
 		"title":    title,
 		"category": category,
 	})

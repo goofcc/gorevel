@@ -28,7 +28,7 @@ func (c Topic) Hot(page int) revel.Result {
 	categories := getCategories()
 	topics, pagination := getTopics(page, "", "hits", routes.Topic.Hot(page))
 
-	c.Vars(Vars{
+	c.vars(Vars{
 		"title":      title,
 		"topics":     topics,
 		"pagination": pagination,
@@ -43,7 +43,7 @@ func (c Topic) Good(page int) revel.Result {
 	categories := getCategories()
 	topics, pagination := getTopics(page, "good = true", "created", routes.Topic.Good(page))
 
-	c.Vars(Vars{
+	c.vars(Vars{
 		"title":      title,
 		"topics":     topics,
 		"pagination": pagination,
@@ -59,7 +59,7 @@ func (c Topic) Category(id int64, page int) revel.Result {
 	categories := getCategories()
 	topics, pagination := getTopics(page, fmt.Sprintf("category_id = %d", id), "created", routes.Topic.Category(id, page))
 
-	c.Vars(Vars{
+	c.vars(Vars{
 		"title":      title,
 		"topics":     topics,
 		"pagination": pagination,
@@ -84,7 +84,7 @@ func (c Topic) NewPost(topic models.Topic, category int64) revel.Result {
 		return c.Redirect(routes.Topic.New())
 	}
 
-	topic.User = models.User{Id: c.userId}
+	topic.User = models.User{Id: c.user().Id}
 	topic.Category = models.Category{Id: category}
 
 	aff, _ := engine.Insert(&topic)
@@ -127,7 +127,7 @@ func (c Topic) Reply(id int64, content string) revel.Result {
 
 	aff, _ := engine.Insert(&models.Reply{
 		Topic:   models.Topic{Id: id},
-		User:    models.User{Id: c.userId},
+		User:    models.User{Id: c.user().Id},
 		Content: content,
 	})
 	if aff == 0 {
@@ -147,7 +147,7 @@ func (c Topic) Edit(id int64) revel.Result {
 		return c.NotFound("帖子不存在")
 	}
 
-	c.Vars(Vars{
+	c.vars(Vars{
 		"title":      title,
 		"topic":      topic,
 		"categories": categories,
