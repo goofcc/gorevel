@@ -32,8 +32,8 @@ Linux/Unix/OS X:
 
 Windows:
 
-    > install.bat
-    > run.bat
+    > winstall.bat
+    > wrun.bat
     
 打开浏览器访问 [http://localhost:9000](http://localhost:9000)
 
