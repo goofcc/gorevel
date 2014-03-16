@@ -130,7 +130,9 @@ func (c Topic) Reply(id int64, content string) revel.Result {
 		Content: content,
 	})
 
-	if aff == 0 {
+	if aff > 0 {
+		engine.Exec("UPDATE topic SET replies = replies + 1 WHERE id = ?", id)
+	} else {
 		c.Flash.Error("发表回复失败")
 	}
 
