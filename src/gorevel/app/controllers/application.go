@@ -12,6 +12,8 @@ import (
 	"code.google.com/p/go-uuid/uuid"
 	"github.com/disintegration/imaging"
 	"github.com/lunny/xorm"
+	qio "github.com/qiniu/api/io"
+	"github.com/qiniu/api/rs"
 	"github.com/robfig/revel"
 
 	"gorevel/app/models"
@@ -32,6 +34,7 @@ type Application struct {
 
 func (c *Application) checkUser() revel.Result {
 	c.RenderArgs["active"] = c.Name
+	c.RenderArgs["qiniuDomain"] = models.QiniuDomain
 	user := c.user()
 	if user != nil {
 		c.RenderArgs["user"] = user
@@ -140,6 +143,31 @@ func uuidFileName(fileName string) string {
 
 func uuidName() string {
 	return strings.Replace(uuid.NewUUID().String(), "-", "", -1)
+}
+
+func qniuUploadImage(file *multipart.File, fileName string) (error, qio.PutRet) {
+	var ret qio.PutRet
+	var policy = rs.PutPolicy{
+		Scope: models.QiniuScope,
+	}
+	err := qio.Put(nil, &ret, policy.Token(nil), fileName, *file, nil)
+	if err != nil {
+		revel.ERROR.Println("io.Put failed:", err)
+	}
+
+	return err, ret
+}
+
+func qniuDeleteImage(fileName string) error {
+	var client rs.Client
+	client = rs.New(nil)
+
+	err := client.Delete(nil, models.QiniuScope, fileName)
+	if err != nil {
+		revel.ERROR.Println("rs.Delete failed:", err)
+	}
+
+	return err
 }
 
 func sendMail(subject, content string, tos []string) error {

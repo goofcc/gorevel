@@ -115,11 +115,19 @@ func (u User) IsDefaultAvatar(avatar string) bool {
 
 // 头像的图片地址
 func (u User) AvatarImgSrc() string {
+	if u.IsQiniuAvatar() {
+		return fmt.Sprintf("/%s?imageMogr/v2/thumbnail/48x48!", u.Avatar)
+	}
+
+	return fmt.Sprintf("/public/img/%s?imageMogr/v2/thumbnail/48x48!", u.Avatar)
+}
+
+func (u User) IsQiniuAvatar() bool {
 	for _, avatar := range Avatars {
 		if avatar == u.Avatar {
-			return fmt.Sprintf("/public/img/%s", u.Avatar)
+			return false
 		}
 	}
 
-	return fmt.Sprintf("/public/upload/%s", u.Avatar)
+	return true
 }

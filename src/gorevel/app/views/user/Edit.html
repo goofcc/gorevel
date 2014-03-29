@@ -20,7 +20,7 @@
 				{{range .avatars}}
 					<li>
 						<label>
-							<img class="img-rounded" src="/public/img/{{.}}">
+							<img class="img-rounded" src="{{$.qiniuDomain}}/public/img/{{.}}">
 							<input style="margin-left: 16px;" type="radio" name="avatar" value="{{.}}"{{if $.user.IsDefaultAvatar .}} checked{{end}}>
 						</label>
 					</li>
@@ -32,7 +32,7 @@
 			{{with $field := field "picture" .}}
 			<div class="control-group">
 				{{if $.user.Avatar}}
-					<img class="img-rounded" src="{{$.user.AvatarImgSrc}}">
+					<img class="img-rounded" src="{{$.qiniuDomain}}{{$.user.AvatarImgSrc}}">
 				{{end}}
 				<div class="controls">
 					<div class="uploader" id="uniform-fileInput">

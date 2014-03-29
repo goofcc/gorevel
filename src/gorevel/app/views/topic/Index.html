@@ -9,7 +9,7 @@
 			{{range .topics}}
 			<div class="media">
 				<a class="pull-left" href="#">
-					<img src="{{.User.AvatarImgSrc}}" class="img-rounded"></img>
+					<img src="{{$.qiniuDomain}}{{.User.AvatarImgSrc}}" class="img-rounded"></img>
 				</a>
 				<div class="media-body">
 					<span class="time pull-right">

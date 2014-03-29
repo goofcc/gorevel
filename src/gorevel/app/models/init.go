@@ -5,13 +5,16 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/lunny/xorm"
+	. "github.com/qiniu/api/conf"
 	"github.com/robfig/config"
 	"github.com/robfig/revel"
 )
 
 var (
-	Engine *xorm.Engine
-	Smtp   SmtpType
+	Engine      *xorm.Engine
+	Smtp        SmtpType
+	QiniuScope  string
+	QiniuDomain string
 )
 
 type SmtpType struct {
@@ -73,14 +76,19 @@ func Init() {
 		)
 	}
 
-	Engine.ShowDebug = revel.DevMode
+	// Engine.ShowSQL = revel.DevMode
+	// Engine.ShowDebug = revel.DevMode
+	// Engine.ShowWarn = revel.DevMode
 	Engine.ShowErr = revel.DevMode
-	Engine.ShowSQL = revel.DevMode
-	Engine.ShowWarn = revel.DevMode
 
 	Smtp.Username, _ = c.String("smtp", "smtp.username")
 	Smtp.Password, _ = c.String("smtp", "smtp.password")
 	Smtp.Address, _ = c.String("smtp", "smtp.address")
 	Smtp.From, _ = c.String("smtp", "smtp.from")
 	Smtp.Host, _ = c.String("smtp", "smtp.host")
+
+	ACCESS_KEY, _ = c.String("qiniu", "access_key")
+	SECRET_KEY, _ = c.String("qiniu", "secret_key")
+	QiniuScope, _ = c.String("qiniu", "scope")
+	QiniuDomain, _ = c.String("qiniu", "qiniuDomain")
 }

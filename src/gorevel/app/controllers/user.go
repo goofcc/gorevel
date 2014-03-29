@@ -121,16 +121,21 @@ func (c User) EditPost(avatar string) revel.Result {
 		defer file.Close()
 		if ok := checkFileExt(c.Validation, header, imageExts, "picture", "Only image"); ok {
 			fileName := uuidFileName(header.Filename)
-			filePath := UPLOAD_PATH + fileName
-
-			saveFile(&file, filePath)
-			thumbFile(filePath)
-
-			deleteFile(UPLOAD_PATH + user.Avatar)
-			user.Avatar = fileName
+			err, ret := qniuUploadImage(&file, fileName)
+			if err != nil {
+				c.Flash.Error("上传头像到七牛出错，请检查七牛配置。")
+				return c.Redirect(routes.User.Edit())
+			} else {
+				if user.IsQiniuAvatar() {
+					qniuDeleteImage(user.Avatar)
+				}
+				user.Avatar = ret.Key
+			}
 		}
 	} else if avatar != "" {
-		deleteFile(UPLOAD_PATH + user.Avatar)
+		if user.IsQiniuAvatar() {
+			qniuDeleteImage(user.Avatar)
+		}
 		user.Avatar = avatar
 	}
 

@@ -9,7 +9,7 @@
 
 					{{with .topic}}
 					<a class="pull-left" href="#">
-						<img src="{{.User.AvatarImgSrc}}" class="img-rounded"></img>
+						<img src="{{$.qiniuDomain}}{{.User.AvatarImgSrc}}" class="img-rounded"></img>
 					</a>
 					<div class="media-body">
 						<span class="time pull-right">
@@ -39,7 +39,7 @@
 				{{range .replies}}
 				<div class="media well well-white well-small media-reply">
 					<a class="pull-left" href="#">
-						<img src="{{.User.AvatarImgSrc}}" class="img-rounded" style="margin-left:10px;"></img>
+						<img src="{{$.qiniuDomain}}{{.User.AvatarImgSrc}}" class="img-rounded" style="margin-left:10px;"></img>
 					</a>
 					<div class="media-body">
 						<span><a class="">{{.User.Name}}</a></span>
@@ -55,7 +55,7 @@
 					<hr>
 					<div class="media">
 						<a class="pull-left" href="#">
-							<img src="/public/img/reply.png" class="img-rounded"></img>
+							<img src="{{.qiniuDomain}}/public/img/reply.png" class="img-rounded"></img>
 						</a>
 						<div class="media-body">
 							{{with $field := field "content" .}}
