@@ -12,9 +12,8 @@ func init() {
 	revel.OnAppStart(Init)
 	revel.InterceptMethod((*Application).checkUser, revel.BEFORE)
 
-	revel.TemplateFuncs["eqis"] = func(a int64, b string) bool {
-		s := strconv.FormatInt(a, 10)
-		return s == b
+	revel.TemplateFuncs["eqis"] = func(i int64, s string) bool {
+		return strconv.FormatInt(i, 10) == s
 	}
 }
 

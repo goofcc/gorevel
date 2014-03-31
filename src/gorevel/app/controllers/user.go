@@ -121,20 +121,20 @@ func (c User) EditPost(avatar string) revel.Result {
 		defer file.Close()
 		if ok := checkFileExt(c.Validation, header, imageExts, "picture", "Only image"); ok {
 			fileName := uuidFileName(header.Filename)
-			err, ret := qniuUploadImage(&file, fileName)
+			err, ret := qiniuUploadImage(&file, fileName)
 			if err != nil {
 				c.Flash.Error("上传头像到七牛出错，请检查七牛配置。")
 				return c.Redirect(routes.User.Edit())
 			} else {
-				if user.IsQiniuAvatar() {
-					qniuDeleteImage(user.Avatar)
+				if user.IsCustomAvatar() {
+					qiniuDeleteImage(user.Avatar)
 				}
 				user.Avatar = ret.Key
 			}
 		}
 	} else if avatar != "" {
-		if user.IsQiniuAvatar() {
-			qniuDeleteImage(user.Avatar)
+		if user.IsCustomAvatar() {
+			qiniuDeleteImage(user.Avatar)
 		}
 		user.Avatar = avatar
 	}
@@ -152,7 +152,6 @@ func (c User) EditPost(avatar string) revel.Result {
 func (c User) Validate(code string) revel.Result {
 	var user models.User
 	has, _ := engine.Where("validate_code = ?", code).Get(&user)
-
 	if !has {
 		return c.NotFound("用户不存在或校验码错误")
 	}

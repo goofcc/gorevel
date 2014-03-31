@@ -41,8 +41,8 @@ func (c *Application) checkUser() revel.Result {
 	}
 
 	// 检查是否需要授权
-	value, ok := Permissions[strings.TrimSuffix(c.Action, "Post")]
-	if ok {
+	action := strings.TrimSuffix(c.Action, "Post")
+	if value, needCheck := Permissions[action]; needCheck {
 		if user == nil {
 			c.Flash.Error("请先登录")
 			c.Session["preUrl"] = c.Request.Request.URL.String()
@@ -73,7 +73,6 @@ func (c *Application) user() *models.User {
 func (c *Application) getUser(username string) *models.User {
 	var user models.User
 	has, _ := engine.Where("name = ?", username).Get(&user)
-
 	if !has {
 		return nil
 	}
@@ -91,12 +90,11 @@ func saveFile(file *multipart.File, filePath string) error {
 	os.MkdirAll(path.Dir(filePath), 0777)
 
 	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
-	defer f.Close()
-
-	if err != nil {
-		revel.ERROR.Println(err)
-	} else {
+	if err == nil {
+		defer f.Close()
 		_, err = io.Copy(f, *file)
+	} else {
+		revel.ERROR.Println(err)
 	}
 
 	return err
@@ -145,7 +143,7 @@ func uuidName() string {
 	return strings.Replace(uuid.NewUUID().String(), "-", "", -1)
 }
 
-func qniuUploadImage(file *multipart.File, fileName string) (error, qio.PutRet) {
+func qiniuUploadImage(file *multipart.File, fileName string) (error, qio.PutRet) {
 	var ret qio.PutRet
 	var policy = rs.PutPolicy{
 		Scope: models.QiniuScope,
@@ -158,7 +156,7 @@ func qniuUploadImage(file *multipart.File, fileName string) (error, qio.PutRet) 
 	return err, ret
 }
 
-func qniuDeleteImage(fileName string) error {
+func qiniuDeleteImage(fileName string) error {
 	var client rs.Client
 	client = rs.New(nil)
 
