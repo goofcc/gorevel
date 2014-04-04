@@ -163,3 +163,56 @@ func (c User) Validate(code string) revel.Result {
 
 	return c.Redirect(routes.User.Signin())
 }
+
+func (c User) ForgotPassword() revel.Result {
+	return c.Render()
+}
+
+func (c User) ForgotPasswordPost(email string) revel.Result {
+	var user models.User
+	has, _ := engine.Where("email = ?", email).Get(&user)
+	if !has {
+		return c.NotFound("用户不存在")
+	}
+
+	user.ValidateCode = uuidName()
+	engine.Cols("validate_code").Update(&user)
+
+	subject := "重设密码 —— Revel社区"
+	content := `<h2><a href="http://gorevel.cn/reset_password/` + user.ValidateCode + `">重设密码</a></h2>`
+	go sendMail(subject, content, []string{user.Email})
+
+	c.Flash.Success(fmt.Sprintf("%s，你好！重设密码的链接已经发送到您的邮箱，请到您的邮箱 %s 重设密码！", user.Name, user.Email))
+
+	return c.Redirect(routes.User.Signin())
+}
+
+func (c User) ResetPassword(code string) revel.Result {
+	return c.Render(code)
+}
+
+func (c User) ResetPasswordPost(code, password, confirmPassword string) revel.Result {
+	var user models.User
+	has, _ := engine.Where("validate_code = ?", code).Get(&user)
+	if !has {
+		return c.NotFound("用户不存在或验证码错误")
+	}
+
+	c.Validation.Required(password).Message("请填写新密码")
+	c.Validation.Required(confirmPassword == password).Message("新密码不一致")
+	if c.Validation.HasErrors() {
+		c.Validation.Keep()
+		c.FlashParams()
+		return c.Redirect(routes.User.ResetPassword(code))
+	}
+
+	user.HashedPassword = models.EncryptPassword(password)
+	aff, _ := engine.Cols("hashed_password").Update(&user)
+	if aff > 0 {
+		c.Flash.Success(fmt.Sprintf("%s，你好！重设密码成功，请登录！", user.Name))
+	} else {
+		c.Flash.Error("出现未知错误，请与管理员联系！")
+	}
+
+	return c.Redirect(routes.User.Signin())
+}

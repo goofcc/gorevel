@@ -25,16 +25,16 @@ type User struct {
 	Id              int64
 	Name            string
 	Email           string
-	Password        string `xorm:"-"`
-	ConfirmPassword string `xorm:"-"`
 	HashedPassword  string
 	Type            int // 1管理员，2普通用户
 	Avatar          string
-	Permissions     map[int]int `xorm:"-"`
 	ValidateCode    string
 	IsActive        bool
-	Created         time.Time `xorm:"created"`
-	Updated         time.Time `xorm:"updated"`
+	Created         time.Time   `xorm:"created"`
+	Updated         time.Time   `xorm:"updated"`
+	Password        string      `xorm:"-"`
+	ConfirmPassword string      `xorm:"-"`
+	Permissions     map[int]int `xorm:"-"`
 }
 
 var (

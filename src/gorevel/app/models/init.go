@@ -79,7 +79,7 @@ func Init() {
 	// Engine.ShowSQL = revel.DevMode
 	// Engine.ShowDebug = revel.DevMode
 	// Engine.ShowWarn = revel.DevMode
-	Engine.ShowErr = revel.DevMode
+	// Engine.ShowErr = revel.DevMode
 
 	Smtp.Username, _ = c.String("smtp", "smtp.username")
 	Smtp.Password, _ = c.String("smtp", "smtp.password")
