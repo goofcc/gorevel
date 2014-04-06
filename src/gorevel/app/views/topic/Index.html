@@ -31,7 +31,9 @@
 
 			<div class="pagination pagination-centered">
 				<ul>
-					{{.pagination.Html}}
+					{{range .pagination.Pages}}
+					<li{{if .IsCurrent}} class="active"{{end}}><a href="{{.Url}}">{{.Num}}</a></li>
+					{{end}}
 				</ul>
 			</div>
 		</div>

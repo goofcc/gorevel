@@ -1,20 +1,25 @@
 package controllers
 
 import (
-	"fmt"
-	"html/template"
+	"strconv"
 )
 
 const (
-	PagesPerView = 11 //最大页码数
-	ItemsPerPage = 10 //每页记录数
+	PagesPerView = 11 //最多显示几个页码
+	ItemsPerPage = 10 //每页几条记录
 )
 
 type Pagination struct {
-	page  int //当前页码
-	rows  int //记录总数
-	url   string
-	pages int //总页数
+	page      int //当前页码
+	rows      int //记录总数
+	url       string
+	pageCount int //总页数
+}
+
+type PageNum struct {
+	Num       int
+	IsCurrent bool
+	Url       string
 }
 
 func NewPagination(page int, rows int, url string) *Pagination {
@@ -25,14 +30,15 @@ func NewPagination(page int, rows int, url string) *Pagination {
 	}
 }
 
-func (p *Pagination) Html() template.HTML {
-	html := ""
-	p.pages = p.rows / ItemsPerPage
-	if p.pages*ItemsPerPage < p.rows {
-		p.pages += 1
+func (p *Pagination) Pages() []PageNum {
+	var result []PageNum
+
+	p.pageCount = p.rows / ItemsPerPage
+	if p.pageCount*ItemsPerPage < p.rows {
+		p.pageCount += 1
 	}
-	if p.pages == 1 {
-		return template.HTML(html)
+	if p.pageCount == 1 {
+		return result
 	}
 
 	page := p.page
@@ -42,19 +48,15 @@ func (p *Pagination) Html() template.HTML {
 	}
 
 	count := page + PagesPerView
-	if count > p.pages {
-		count = p.pages
+	if count > p.pageCount {
+		count = p.pageCount
 	}
 
 	pageNum := 0
 	for ; page < count; page++ {
 		pageNum = page + 1
-		if page != p.page {
-			html += fmt.Sprintf(`<li><a href="%s%d">%d</a></li>`, p.url, pageNum, pageNum)
-		} else {
-			html += fmt.Sprintf(`<li class="active"><a href="#">%d</a></li>`, pageNum)
-		}
+		result = append(result, PageNum{pageNum, page == p.page, p.url + strconv.Itoa(pageNum)})
 	}
 
-	return template.HTML(html)
+	return result
 }
