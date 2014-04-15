@@ -215,7 +215,7 @@ func (c User) ResetPasswordPost(code, password, confirmPassword string) revel.Re
 	}
 
 	user.HashedPassword = models.EncryptPassword(password)
-	aff, _ := engine.Cols("hashed_password").Update(&user)
+	aff, _ := engine.Id(user.Id).Cols("hashed_password").Update(&user)
 	if aff > 0 {
 		c.Flash.Success(fmt.Sprintf("%s，你好！重设密码成功，请登录！", user.Name))
 	} else {
