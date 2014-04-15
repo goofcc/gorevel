@@ -190,7 +190,7 @@ func (c User) ForgotPasswordPost(email string) revel.Result {
 	content := `<h2><a href="http://gorevel.cn/reset_password/` + user.ValidateCode + `">重设密码</a></h2>`
 	go sendMail(subject, content, []string{user.Email})
 
-	c.Flash.Success(fmt.Sprintf("链接已经发送，请到您的邮箱 %s 重设密码！", user.Email))
+	c.Flash.Success(fmt.Sprintf("你好，重设密码的链接已经发送到您的邮箱，请到您的邮箱 %s 重设密码！", user.Email))
 
 	return c.Redirect(routes.User.Signin())
 }
@@ -202,7 +202,7 @@ func (c User) ResetPassword(code string) revel.Result {
 func (c User) ResetPasswordPost(code, password, confirmPassword string) revel.Result {
 	var user models.User
 	has, _ := engine.Where("validate_code = ?", code).Get(&user)
-	if !has {
+	if code == "" || !has {
 		return c.NotFound("用户不存在或验证码错误")
 	}
 
@@ -214,8 +214,9 @@ func (c User) ResetPasswordPost(code, password, confirmPassword string) revel.Re
 		return c.Redirect(routes.User.ResetPassword(code))
 	}
 
-	user.HashedPassword = models.EncryptPassword(password)
-	aff, _ := engine.Id(user.Id).Cols("hashed_password").Update(&user)
+	aff, _ := engine.Id(user.Id).Cols("hashed_password").Update(&models.User{
+		HashedPassword: models.EncryptPassword(password),
+	})
 	if aff > 0 {
 		c.Flash.Success(fmt.Sprintf("%s，你好！重设密码成功，请登录！", user.Name))
 	} else {
