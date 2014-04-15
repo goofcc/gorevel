@@ -16,7 +16,7 @@
 						<abbr class="timeago" title="{{datetime .Created}}+00:00"></abbr>
 					</span>
 					<h4 class="media-heading">
-						<a href="{{url "Topic.Show" .Id}}">{{.Title}}</a>
+						<a href="{{url "Topic.Show" .Id}}" class="topic-list-title">{{.Title}}</a>
 						{{if eq .User.Id $.user.Id}}<a href="{{url "Topic.Edit" .Id}}"><i class="icon-edit"></i></a>{{end}}
 					</h4>
 					<span class="label">{{.Category.Name}}</span> ·

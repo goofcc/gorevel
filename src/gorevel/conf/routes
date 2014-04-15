@@ -42,12 +42,12 @@ GET     /topic/:id                              Topic.Show
 GET     /topic/:id/reply                        Topic.Reply
 GET     /topic/category/:id                     Topic.Category
 
-
 # Ignore favicon requests
 GET     /favicon.ico                            404
 
 # Map static resources from the /app/public folder to the /public path
 GET     /public/*filepath                       Static.Serve("public")
+GET     /docs/*filepath                         Static.Serve("public/docs")
 
 # Catch all
 *       /:controller/:action                    :controller.:action

@@ -22,7 +22,7 @@ type PageNum struct {
 	Url       string
 }
 
-func NewPagination(page int, rows int, url string) *Pagination {
+func NewPagination(page, rows int, url string) *Pagination {
 	return &Pagination{
 		page: page,
 		rows: rows,

@@ -169,6 +169,14 @@ func (c User) ForgotPassword() revel.Result {
 }
 
 func (c User) ForgotPasswordPost(email string) revel.Result {
+	c.Validation.Required(email).Message("请填写Email")
+	c.Validation.Email(email).Message("Email格式不正确")
+	if c.Validation.HasErrors() {
+		c.Validation.Keep()
+		c.FlashParams()
+		return c.Redirect(routes.User.ForgotPassword())
+	}
+
 	var user models.User
 	has, _ := engine.Where("email = ?", email).Get(&user)
 	if !has {
@@ -182,7 +190,7 @@ func (c User) ForgotPasswordPost(email string) revel.Result {
 	content := `<h2><a href="http://gorevel.cn/reset_password/` + user.ValidateCode + `">重设密码</a></h2>`
 	go sendMail(subject, content, []string{user.Email})
 
-	c.Flash.Success(fmt.Sprintf("%s，你好！重设密码的链接已经发送到您的邮箱，请到您的邮箱 %s 重设密码！", user.Name, user.Email))
+	c.Flash.Success(fmt.Sprintf("链接已经发送，请到您的邮箱 %s 重设密码！", user.Email))
 
 	return c.Redirect(routes.User.Signin())
 }

@@ -12,6 +12,7 @@ go get -u github.com/lunny/xorm
 go get -u code.google.com/p/go-uuid/uuid
 go get -u github.com/disintegration/imaging
 go get -u github.com/cbonello/revel-csrf
+go get -u github.com/qiniu/api
 
 export GOPATH="$OLDGOPATH"
 
