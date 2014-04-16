@@ -34,6 +34,7 @@ POST    /admin/category/:id/edit                Admin.EditCategoryPost
 GET     /topic                                  Topic.Index
 GET     /topic/hot                              Topic.Hot
 GET     /topic/good                             Topic.Good
+GET     /topic/:id/good                         Topic.SetGood
 GET     /topic/new                              Topic.New
 POST    /topic/new                              Topic.NewPost
 GET     /topic/:id/edit                         Topic.Edit

@@ -17,9 +17,10 @@ var Permissions = map[string]int{
 	"Admin.DeleteCategory": ADMIN_GROUP,
 
 	// Topic
-	"Topic.New":   MEMBER_GROUP,
-	"Topic.Edit":  MEMBER_GROUP,
-	"Topic.Reply": MEMBER_GROUP,
+	"Topic.New":     MEMBER_GROUP,
+	"Topic.Edit":    MEMBER_GROUP,
+	"Topic.Reply":   MEMBER_GROUP,
+	"Topic.SetGood": ADMIN_GROUP,
 
 	// User
 	"User.Edit": MEMBER_GROUP,

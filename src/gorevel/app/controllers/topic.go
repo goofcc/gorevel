@@ -14,61 +14,6 @@ type Topic struct {
 	Application
 }
 
-// 帖子列表
-func (c Topic) Index(page int) revel.Result {
-	title := "最近发表"
-	categories := getCategories()
-	topics, pagination := getTopics(page, "", "created", routes.Topic.Index(page))
-
-	return c.Render(title, topics, pagination, categories)
-}
-
-func (c Topic) Hot(page int) revel.Result {
-	title := "最多点击"
-	categories := getCategories()
-	topics, pagination := getTopics(page, "", "hits", routes.Topic.Hot(page))
-
-	c.vars(Vars{
-		"title":      title,
-		"topics":     topics,
-		"pagination": pagination,
-		"categories": categories,
-	})
-
-	return c.RenderTemplate("topic/Index.html")
-}
-
-func (c Topic) Good(page int) revel.Result {
-	title := "好帖推荐"
-	categories := getCategories()
-	topics, pagination := getTopics(page, "good = true", "created", routes.Topic.Good(page))
-
-	c.vars(Vars{
-		"title":      title,
-		"topics":     topics,
-		"pagination": pagination,
-		"categories": categories,
-	})
-
-	return c.RenderTemplate("topic/Index.html")
-}
-
-// 帖子分类查询，帖子列表按时间排序
-func (c Topic) Category(id int64, page int) revel.Result {
-	title := "最近发表"
-	categories := getCategories()
-	topics, pagination := getTopics(page, fmt.Sprintf("category_id = %d", id), "created", routes.Topic.Category(id, page))
-
-	c.vars(Vars{
-		"title":      title,
-		"topics":     topics,
-		"pagination": pagination,
-		"categories": categories,
-	})
-
-	return c.RenderTemplate("topic/Index.html")
-}
-
 func (c Topic) New() revel.Result {
 	title := "发表新帖"
 	categories := getCategories()
@@ -176,6 +121,71 @@ func (c Topic) EditPost(id int64, topic models.Topic, category int64) revel.Resu
 	}
 
 	return c.Redirect(routes.Topic.Show(id))
+}
+
+// 帖子列表
+func (c Topic) Index(page int) revel.Result {
+	title := "最近发表"
+	categories := getCategories()
+	topics, pagination := getTopics(page, "", "created", routes.Topic.Index(page))
+
+	return c.Render(title, topics, pagination, categories)
+}
+
+func (c Topic) Hot(page int) revel.Result {
+	title := "最多点击"
+	categories := getCategories()
+	topics, pagination := getTopics(page, "", "hits", routes.Topic.Hot(page))
+
+	c.vars(Vars{
+		"title":      title,
+		"topics":     topics,
+		"pagination": pagination,
+		"categories": categories,
+	})
+
+	return c.RenderTemplate("topic/Index.html")
+}
+
+func (c Topic) Good(page int) revel.Result {
+	title := "好帖推荐"
+	categories := getCategories()
+	topics, pagination := getTopics(page, "good = true", "created", routes.Topic.Good(page))
+
+	c.vars(Vars{
+		"title":      title,
+		"topics":     topics,
+		"pagination": pagination,
+		"categories": categories,
+	})
+
+	return c.RenderTemplate("topic/Index.html")
+}
+
+func (c Topic) SetGood(id int64) revel.Result {
+	aff, err := engine.Id(id).Cols("good").Update(&models.Topic{Good: true})
+	revel.INFO.Println(aff, err)
+	if aff > 0 {
+		return c.RenderJson(map[string]bool{"status": true})
+	}
+
+	return c.RenderJson(map[string]bool{"status": false})
+}
+
+// 帖子分类查询，帖子列表按时间排序
+func (c Topic) Category(id int64, page int) revel.Result {
+	title := "最近发表"
+	categories := getCategories()
+	topics, pagination := getTopics(page, fmt.Sprintf("category_id = %d", id), "created", routes.Topic.Category(id, page))
+
+	c.vars(Vars{
+		"title":      title,
+		"topics":     topics,
+		"pagination": pagination,
+		"categories": categories,
+	})
+
+	return c.RenderTemplate("topic/Index.html")
 }
 
 func getTopics(page int, where string, order string, url string) ([]models.Topic, *Pagination) {
