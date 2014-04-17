@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/robfig/revel"
+	"github.com/robfig/revel/cache"
 
 	"gorevel/app/models"
 	"gorevel/app/routes"
@@ -112,7 +113,10 @@ func (c Admin) EditCategoryPost(id int64, category models.Category) revel.Result
 
 func getCategories() []models.Category {
 	var categories []models.Category
-	engine.Find(&categories)
+	if err := cache.Get("categories", &categories); err != nil {
+		engine.Find(&categories)
+		go cache.Set("categories", categories, cache.FOREVER)
+	}
 
 	return categories
 }

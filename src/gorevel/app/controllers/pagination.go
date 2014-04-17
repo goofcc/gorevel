@@ -5,57 +5,68 @@ import (
 )
 
 const (
-	PagesPerView = 11 //最多显示几个页码
-	ItemsPerPage = 10 //每页几条记录
+	ROWS_PER_PAGE  = 11 //每页几条记录
+	PAGES_PER_VIEW = 10 //最多显示几个页码
 )
 
 type Pagination struct {
-	page      int //当前页码
-	rows      int //记录总数
-	url       string
-	pageCount int //总页数
+	page      int    //当前页码
+	rowCount  int    //记录总数
+	url       string //页码链接
+	pageCount int    //总页数
 }
 
 type PageNum struct {
 	Num       int
-	IsCurrent bool
 	Url       string
+	IsCurrent bool
 }
 
-func NewPagination(page, rows int, url string) *Pagination {
+func NewPagination(page, rowCount int, url string) *Pagination {
+	pageCount := rowCount / ROWS_PER_PAGE
+
+	if pageCount*ROWS_PER_PAGE < rowCount {
+		pageCount += 1
+	}
+
 	return &Pagination{
-		page: page,
-		rows: rows,
-		url:  url,
+		page:      page,
+		rowCount:  rowCount,
+		url:       url,
+		pageCount: pageCount,
 	}
 }
 
 func (p *Pagination) Pages() []PageNum {
 	var result []PageNum
 
-	p.pageCount = p.rows / ItemsPerPage
-	if p.pageCount*ItemsPerPage < p.rows {
-		p.pageCount += 1
-	}
 	if p.pageCount == 1 {
 		return result
 	}
 
-	page := p.page
-	page -= PagesPerView / 2
-	if page < 0 {
-		page = 0
+	// 计算起始位置
+	begin := p.page - PAGES_PER_VIEW/2
+	if begin < 0 {
+		begin = 0
 	}
 
-	count := page + PagesPerView
-	if count > p.pageCount {
-		count = p.pageCount
+	to := begin + PAGES_PER_VIEW
+	if to > p.pageCount {
+		to = p.pageCount
 	}
 
-	pageNum := 0
-	for ; page < count; page++ {
-		pageNum = page + 1
-		result = append(result, PageNum{pageNum, page == p.page, p.url + strconv.Itoa(pageNum)})
+	// 确定页码数量
+	if to-begin < PAGES_PER_VIEW {
+		begin = to - PAGES_PER_VIEW
+	}
+	if begin < 0 {
+		begin = 0
+	}
+
+	var pageNum int
+	for ; begin < to; begin++ {
+		pageNum = begin + 1
+		result = append(result, PageNum{pageNum, p.url + strconv.Itoa(pageNum), pageNum == p.page})
 	}
 
 	return result

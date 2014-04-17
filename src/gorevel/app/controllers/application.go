@@ -34,6 +34,7 @@ type Application struct {
 
 func (c *Application) checkUser() revel.Result {
 	c.RenderArgs["active"] = c.Name
+	c.RenderArgs["action"] = c.Action
 	c.RenderArgs["qiniuDomain"] = models.QiniuDomain
 	user := c.user()
 	if user != nil {

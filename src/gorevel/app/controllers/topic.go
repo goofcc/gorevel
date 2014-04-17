@@ -2,9 +2,11 @@ package controllers
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/robfig/revel"
+	"github.com/robfig/revel/cache"
 
 	"gorevel/app/models"
 	"gorevel/app/routes"
@@ -35,6 +37,7 @@ func (c Topic) NewPost(topic models.Topic, category int64) revel.Result {
 	aff, _ := engine.Insert(&topic)
 	if aff > 0 {
 		c.Flash.Success("发表新帖成功")
+		cache.Flush()
 	} else {
 		c.Flash.Error("发表新帖失败")
 	}
@@ -45,13 +48,19 @@ func (c Topic) NewPost(topic models.Topic, category int64) revel.Result {
 // 帖子详细
 func (c Topic) Show(id int64) revel.Result {
 	topic := new(models.Topic)
-	has, _ := engine.Id(id).Get(topic)
-	if !has {
-		return c.NotFound("帖子不存在")
+	idStr := strconv.Itoa(int(id))
+	if err := cache.Get("topic"+idStr, &topic); err != nil {
+		has, _ := engine.Id(id).Get(topic)
+		if !has {
+			return c.NotFound("帖子不存在")
+		}
+
+		go cache.Set("topic"+idStr, topic, cache.FOREVER)
 	}
 
 	topic.Hits += 1
 	engine.Id(id).Cols("hits").Update(topic)
+	cacheUpdateHits()
 
 	replies := getReplies(id)
 	categories := getCategories()
@@ -77,6 +86,11 @@ func (c Topic) Reply(id int64, content string) revel.Result {
 
 	if aff > 0 {
 		engine.Exec("UPDATE topic SET replies = replies + 1 WHERE id = ?", id)
+
+		idStr := strconv.Itoa(int(id))
+		cache.Delete("replies" + idStr)
+		cacheUpdateReplies()
+
 	} else {
 		c.Flash.Error("发表回复失败")
 	}
@@ -116,6 +130,7 @@ func (c Topic) EditPost(id int64, topic models.Topic, category int64) revel.Resu
 	aff, _ := engine.Id(id).Cols("title", "category_id", "content").Update(&topic)
 	if aff > 0 {
 		c.Flash.Success("编辑帖子成功")
+		cache.Flush()
 	} else {
 		c.Flash.Error("编辑帖子失败")
 	}
@@ -163,8 +178,7 @@ func (c Topic) Good(page int) revel.Result {
 }
 
 func (c Topic) SetGood(id int64) revel.Result {
-	aff, err := engine.Id(id).Cols("good").Update(&models.Topic{Good: true})
-	revel.INFO.Println(aff, err)
+	aff, _ := engine.Id(id).Cols("good").Update(&models.Topic{Good: true})
 	if aff > 0 {
 		return c.RenderJson(map[string]bool{"status": true})
 	}
@@ -189,36 +203,53 @@ func (c Topic) Category(id int64, page int) revel.Result {
 }
 
 func getTopics(page int, where string, order string, url string) ([]models.Topic, *Pagination) {
-	page -= 1
-	if page < 0 {
-		page = 0
+	if page < 1 {
+		page = 1
+		url = url[:strings.Index(url, "=")+1] + "1"
 	}
 
 	var topics []models.Topic
+	var pagination *Pagination
 	var rows int64
-	if where == "" {
-		rows, _ = engine.Count(&models.Topic{})
-		err := engine.Omit("Content").Desc(order).Limit(ItemsPerPage, page*ItemsPerPage).Find(&topics)
-		if err != nil {
-			revel.ERROR.Println(err)
+
+	if err := cache.Get("topics"+url, &topics); err != nil {
+		if where == "" {
+			rows, _ = engine.Count(&models.Topic{})
+			err := engine.Omit("Content").Desc(order).Limit(ROWS_PER_PAGE, (page-1)*ROWS_PER_PAGE).Find(&topics)
+			if err != nil {
+				revel.ERROR.Println(err)
+			}
+		} else {
+			rows, _ = engine.Where(where).Count(&models.Topic{})
+			err := engine.Where(where).Omit("Content").Desc(order).Limit(ROWS_PER_PAGE, (page-1)*ROWS_PER_PAGE).Find(&topics)
+			if err != nil {
+				revel.ERROR.Println(err)
+			}
 		}
+
+		pagination = NewPagination(page, int(rows), url[:strings.Index(url, "=")+1])
+
+		go cache.Set("topics"+url, topics, cache.FOREVER)
+		go cache.Set("pagination"+url, pagination, cache.FOREVER)
+
 	} else {
-		rows, _ = engine.Where(where).Count(&models.Topic{})
-		err := engine.Where(where).Omit("Content").Desc(order).Limit(ItemsPerPage, page*ItemsPerPage).Find(&topics)
-		if err != nil {
+		if err := cache.Get("pagination"+url, &pagination); err != nil {
 			revel.ERROR.Println(err)
 		}
 	}
-
-	url = url[:strings.Index(url, "=")+1]
-	pagination := NewPagination(page, int(rows), url)
 
 	return topics, pagination
 }
 
 func getReplies(id int64) []models.Reply {
 	var replies []models.Reply
-	engine.Where("topic_id = ?", id).Find(&replies)
+	idStr := strconv.Itoa(int(id))
+
+	if err := cache.Get("replies"+idStr, &replies); err != nil {
+		engine.Where("topic_id = ?", id).Find(&replies)
+
+		go cache.Set("replies"+idStr, replies, cache.FOREVER)
+	}
 
 	return replies
 }
