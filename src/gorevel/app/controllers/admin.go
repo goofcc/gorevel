@@ -42,9 +42,7 @@ func (c Admin) ActivateUser(id int64) revel.Result {
 }
 
 func (c Admin) ListCategory() revel.Result {
-	categories := getCategories()
-
-	return c.Render(categories)
+	return c.Render()
 }
 
 func (c Admin) DeleteCategory(id int64) revel.Result {
@@ -70,8 +68,13 @@ func (c Admin) NewCategoryPost(category models.Category) revel.Result {
 	}
 
 	aff, _ := engine.Insert(&category)
-	if aff == 0 {
+	if aff > 0 {
+		c.Flash.Success("添加分类成功")
+		cache.Delete("categories")
+
+	} else {
 		c.Flash.Error("添加分类失败")
+		return c.Redirect(routes.Admin.NewCategory())
 	}
 
 	return c.Redirect(routes.Admin.ListCategory())
@@ -100,12 +103,16 @@ func (c Admin) EditCategoryPost(id int64, category models.Category) revel.Result
 	if c.Validation.HasErrors() {
 		c.Validation.Keep()
 		c.FlashParams()
-		return c.Redirect(routes.Admin.NewCategory())
+		return c.Redirect(routes.Admin.EditCategory(id))
 	}
 
 	aff, _ := engine.Id(id).Update(&category)
-	if aff == 0 {
+	if aff > 0 {
+		c.Flash.Success("编辑分类成功")
+		cache.Flush()
+	} else {
 		c.Flash.Error("编辑分类失败")
+		return c.Redirect(routes.Admin.EditCategory(id))
 	}
 
 	return c.Redirect(routes.Admin.ListCategory())

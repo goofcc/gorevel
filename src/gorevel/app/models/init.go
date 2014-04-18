@@ -4,17 +4,18 @@ import (
 	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/lunny/xorm"
+	"github.com/go-xorm/xorm"
 	. "github.com/qiniu/api/conf"
 	"github.com/robfig/config"
 	"github.com/robfig/revel"
 )
 
 var (
-	Engine      *xorm.Engine
-	Smtp        SmtpType
-	QiniuScope  string
-	QiniuDomain string
+	Engine        *xorm.Engine
+	Smtp          SmtpType
+	QiniuScope    string
+	QiniuDomain   string
+	CachePageSize int // 允许缓存前几页数据
 )
 
 type SmtpType struct {
@@ -39,12 +40,17 @@ func Init() {
 	host, _ := c.String("database", "db.host")
 
 	params := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true", user, password, host, dbname)
+
 	Engine, err = xorm.NewEngine(driver, params)
 	// defer Engine.Close()
-
 	if err != nil {
 		panic(err)
 	}
+
+	// Engine.ShowSQL = revel.DevMode
+	// Engine.ShowDebug = revel.DevMode
+	// Engine.ShowWarn = revel.DevMode
+	// Engine.ShowErr = revel.DevMode
 
 	err = Engine.Sync(
 		new(User),
@@ -76,11 +82,6 @@ func Init() {
 		)
 	}
 
-	// Engine.ShowSQL = revel.DevMode
-	// Engine.ShowDebug = revel.DevMode
-	// Engine.ShowWarn = revel.DevMode
-	// Engine.ShowErr = revel.DevMode
-
 	Smtp.Username, _ = c.String("smtp", "smtp.username")
 	Smtp.Password, _ = c.String("smtp", "smtp.password")
 	Smtp.Address, _ = c.String("smtp", "smtp.address")
@@ -91,4 +92,6 @@ func Init() {
 	SECRET_KEY, _ = c.String("qiniu", "secret_key")
 	QiniuScope, _ = c.String("qiniu", "scope")
 	QiniuDomain, _ = c.String("qiniu", "qiniuDomain")
+
+	CachePageSize, _ = c.Int("", "cache.page")
 }

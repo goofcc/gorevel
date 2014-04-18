@@ -3,14 +3,13 @@
 	<ul class="nav nav-list">
 		<li class="nav-header"><i class="icon-user"></i></li>
 		<li {{if eq .title "用户列表"}}class="active"{{end}}>
-			<a href="{{url "Admin.ListUser"}}">用户列表</a></li>
+			<a href="{{url "Admin.ListUser"}}">用户列表</a>
+		</li>
 
 		<li class="nav-header"><i class="icon-th-list"></i></li>
-		<li {{if eq .title "新建分类"}}class="active"{{end}}>
-			<a href="{{url "Admin.NewCategory"}}">新建分类</a></li>
 		<li {{if eq .title "分类列表"}}class="active"{{end}}>
-			<a href="{{url "Admin.ListCategory"}}">分类列表</a></li>
-
+			<a href="{{url "Admin.ListCategory"}}">分类列表</a>
+		</li>
 
 		<li class="nav-header"><i class="icon-folder-open"></i></li>
 		<li><a href="#">Link</a></li>

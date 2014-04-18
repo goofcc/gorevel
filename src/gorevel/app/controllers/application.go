@@ -11,7 +11,7 @@ import (
 
 	"code.google.com/p/go-uuid/uuid"
 	"github.com/disintegration/imaging"
-	"github.com/lunny/xorm"
+	"github.com/go-xorm/xorm"
 	qio "github.com/qiniu/api/io"
 	"github.com/qiniu/api/rs"
 	"github.com/robfig/revel"
@@ -33,9 +33,6 @@ type Application struct {
 }
 
 func (c *Application) checkUser() revel.Result {
-	c.RenderArgs["active"] = c.Name
-	c.RenderArgs["action"] = c.Action
-	c.RenderArgs["qiniuDomain"] = models.QiniuDomain
 	user := c.user()
 	if user != nil {
 		c.RenderArgs["user"] = user
@@ -55,6 +52,8 @@ func (c *Application) checkUser() revel.Result {
 			}
 		}
 	}
+
+	c.bindArgs()
 
 	return nil
 }
@@ -79,6 +78,15 @@ func (c *Application) getUser(username string) *models.User {
 	}
 
 	return &user
+}
+
+func (c *Application) bindArgs() {
+	c.vars(Vars{
+		"active":      c.Name,
+		"action":      c.Action,
+		"qiniuDomain": models.QiniuDomain,
+		"categories":  getCategories(),
+	})
 }
 
 func (c *Application) vars(vars Vars) {

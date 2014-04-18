@@ -11,8 +11,8 @@
 		<div class="page-header">
 			<h3>{{.title}}</h3>
 		</div>
-
-		<form action="{{if $.category}}{{url "Admin.EditCategory" $.category.Id}}{{else}}{{url "Admin.NewCategory"}}{{end}}" method="POST" class="form-horizontal">
+{{.}}
+		<form action="{{if .category}}{{url "Admin.EditCategory" .category.Id}}{{else}}{{url "Admin.NewCategory"}}{{end}}" method="POST" class="form-horizontal">
 			<input type="hidden" name="csrf_token" value="{{ .csrf_token }}" />
 
 			{{with $field := field "category.Name" .}}
@@ -45,4 +45,5 @@
 	</div>
 
 </div>
+
 {{template "admin/footer.html" .}}
