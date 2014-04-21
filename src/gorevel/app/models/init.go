@@ -72,8 +72,8 @@ func Init() {
 			Email:          "admin@admin.com",
 			Avatar:         DefaultAvatar,
 			Type:           1,
-			IsActive:       true,
-			HashedPassword: EncryptPassword("123"),
+			Status:         USER_STATUS_ACTIVATED,
+			HashedPassword: EncryptPassword("123", ""),
 		})
 
 		Engine.Insert(

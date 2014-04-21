@@ -5,15 +5,15 @@ import (
 )
 
 const (
-	ROWS_PER_PAGE  = 11 //每页几条记录
-	PAGES_PER_VIEW = 10 //最多显示几个页码
+	ROWS_PER_PAGE  = 11 // 每页几条记录
+	PAGES_PER_VIEW = 10 // 最多显示几个页码
 )
 
 type Pagination struct {
-	page      int    //当前页码
-	rowCount  int    //记录总数
-	url       string //页码链接
-	pageCount int    //总页数
+	page      int    // 当前页码
+	rowCount  int    // 记录总数
+	url       string // 页码链接
+	pageCount int    // 总页数
 }
 
 type PageNum struct {

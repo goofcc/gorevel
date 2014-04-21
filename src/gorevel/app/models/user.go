@@ -10,6 +10,12 @@ import (
 	"github.com/robfig/revel"
 )
 
+const (
+	USER_STATUS_INACTIVE = iota
+	USER_STATUS_ACTIVATED
+	USER_STATUS_DISABLE
+)
+
 var (
 	Avatars = []string{
 		"gopher_teal.jpg",
@@ -26,10 +32,11 @@ type User struct {
 	Name            string
 	Email           string
 	HashedPassword  string
+	Salt            string
 	Type            int // 1管理员，2普通用户
 	Avatar          string
 	ValidateCode    string
-	IsActive        bool
+	Status          int
 	Created         time.Time   `xorm:"created"`
 	Updated         time.Time   `xorm:"updated"`
 	Password        string      `xorm:"-"`
@@ -84,9 +91,9 @@ func (u User) HasEmail() bool {
 }
 
 // 加密密码,转成md5
-func EncryptPassword(password string) string {
+func EncryptPassword(password, salt string) string {
 	h := md5.New()
-	io.WriteString(h, password)
+	io.WriteString(h, password+salt)
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
@@ -106,6 +113,10 @@ func (u User) GetPermissions() map[int]int {
 
 func (u User) IsAdmin() bool {
 	return u.Type == 1
+}
+
+func (u User) IsActive() bool {
+	return u.Status == USER_STATUS_ACTIVATED
 }
 
 // 是否是默认头像

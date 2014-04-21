@@ -33,7 +33,7 @@ func (c Admin) DeleteUser(id int64) revel.Result {
 }
 
 func (c Admin) ActivateUser(id int64) revel.Result {
-	aff, _ := engine.Id(id).Cols("is_active").Update(&models.User{IsActive: true})
+	aff, _ := engine.Id(id).Cols("status").Update(&models.User{Status: models.USER_STATUS_ACTIVATED})
 	if aff > 0 {
 		return c.RenderJson(map[string]bool{"status": true})
 	}

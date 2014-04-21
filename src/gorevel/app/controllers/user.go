@@ -25,18 +25,22 @@ func (c User) SignupPost(user models.User) revel.Result {
 		return c.Redirect(routes.User.Signup())
 	}
 
-	user.Type = MEMBER_GROUP
-	user.Avatar = models.DefaultAvatar
-	user.ValidateCode = uuidName()
-	user.HashedPassword = models.EncryptPassword(user.Password)
-
-	aff, _ := engine.Insert(&user)
+	salt := uuidName()
+	aff, _ := engine.Insert(&models.User{
+		Name:           user.Name,
+		Email:          user.Email,
+		Type:           MEMBER_GROUP,
+		Avatar:         models.DefaultAvatar,
+		ValidateCode:   uuidName(),
+		Salt:           salt,
+		HashedPassword: models.EncryptPassword(user.Password, salt),
+	})
 	if aff == 0 {
 		c.Flash.Error("注册用户失败")
 		return c.Redirect(routes.User.Signup())
 	}
 
-	subject := "激活账号 —— Revel社区"
+	subject := "激活账号 —— Revel中文社区"
 	content := `<h2><a href="http://gorevel.cn/user/validate/` + user.ValidateCode + `">激活账号</a></h2>`
 	go sendMail(subject, content, []string{user.Email})
 
@@ -57,7 +61,6 @@ func (c User) Signin() revel.Result {
 func (c User) SigninPost(name, password string) revel.Result {
 	c.Validation.Required(name).Message("请输入用户名")
 	c.Validation.Required(password).Message("请输入密码")
-
 	if c.Validation.HasErrors() {
 		c.Validation.Keep()
 		c.FlashParams()
@@ -65,8 +68,15 @@ func (c User) SigninPost(name, password string) revel.Result {
 	}
 
 	var user models.User
-	has, _ := engine.Where("name = ? AND hashed_password = ?", name, models.EncryptPassword(password)).Get(&user)
-	if !has {
+	var count int64
+	has, _ := engine.Where("name = ?", name).Get(&user)
+	if has {
+		hashedPassword := models.EncryptPassword(password, user.Salt)
+		count, _ = engine.Where("name = ? AND hashed_password = ?", name, hashedPassword).Count(&models.User{})
+		revel.WARN.Println(name, hashedPassword, has, user)
+	}
+
+	if !has || count == 0 {
 		c.Validation.Keep()
 		c.FlashParams()
 		c.Flash.Out["user"] = name
@@ -74,7 +84,7 @@ func (c User) SigninPost(name, password string) revel.Result {
 		return c.Redirect(routes.User.Signin())
 	}
 
-	if !user.IsActive {
+	if !user.IsActive() {
 		c.Flash.Error(fmt.Sprintf("您的账号 %s 尚未激活，请到您的邮箱 %s 激活账号！", user.Name, user.Email))
 		c.Validation.Keep()
 		c.FlashParams()
@@ -156,8 +166,8 @@ func (c User) Validate(code string) revel.Result {
 		return c.NotFound("用户不存在或校验码错误")
 	}
 
-	user.IsActive = true
-	engine.Cols("is_active").Update(&user)
+	user.Status = models.USER_STATUS_ACTIVATED
+	engine.Cols("status").Update(&user)
 
 	c.Flash.Success("您的账号成功激活，请登录！")
 
@@ -214,8 +224,10 @@ func (c User) ResetPasswordPost(code, password, confirmPassword string) revel.Re
 		return c.Redirect(routes.User.ResetPassword(code))
 	}
 
+	salt := uuidName()
 	aff, _ := engine.Id(user.Id).Cols("hashed_password", "validate_code").Update(&models.User{
-		HashedPassword: models.EncryptPassword(password),
+		HashedPassword: models.EncryptPassword(password, salt),
+		Salt:           salt,
 		ValidateCode:   "",
 	})
 	if aff > 0 {
