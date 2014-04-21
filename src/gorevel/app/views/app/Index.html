@@ -22,12 +22,12 @@
       <h1>快速入门</h1>
     </div>
     1、安装 Revel 框架
-    <pre><code>$ go get github.com/robfig/revel
+    <pre><code>$ go get github.com/revel/revel
 </code></pre>
 
 
 2、安装 Revel 命令行工具
-    <pre><code>$ go get github.com/robfig/revel/revel
+    <pre><code>$ go get github.com/revel/cmd/revel
 </code></pre>
 
 3、创建 Revel 应用
@@ -74,7 +74,7 @@ $ revel run myapp
 
 <pre><code>package controllers
 
-import "github.com/robfig/revel"
+import "github.com/revel/revel"
 
 type <a>App</a> struct {
   *revel.Controller
@@ -125,6 +125,6 @@ func (c App) <a>Index()</a> revel.Result {
   revel.TemplateFuncs["eq"] = func(a, b interface{}) bool { return a == b }
 }</code></pre>
 <br>
-更多Revel内容，请参考<a href="/docs/index.html" target="_blank"> 本站文档</a> 或 <a href="http://robfig.github.io/revel/manual" target="_blank">官方手册</a>。
+更多Revel内容，请参考<a href="/docs/index.html" target="_blank"> 本站文档</a> 或 <a href="http://revel.github.io" target="_blank">官方手册</a>。
 </div> <!-- /container -->
 {{template "footer.html" .}}

@@ -11,14 +11,19 @@ gorevel
 
 ###Requirements
 
-- Go1.1+
+- Go1.2+
+
 - github.com/robfig/revel
 - github.com/robfig/revel/revel
 - github.com/go-sql-driver/mysql
-- github.com/lunny/xorm"
-- github.com/disintegration/imaging
+- github.com/go-xorm/xorm
 - code.google.com/p/go-uuid/uuid
+- github.com/disintegration/imaging
 - github.com/cbonello/revel-csrf
+- github.com/qiniu/api
+- github.com/garyburd/redigo/redis
+- github.com/robfig/go-cache
+- github.com/robfig/gomemcache/memcache
 
 ###Install
 
