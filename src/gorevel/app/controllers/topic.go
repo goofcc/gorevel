@@ -106,7 +106,7 @@ func (c Topic) Edit(id int64) revel.Result {
 		return c.NotFound("帖子不存在")
 	}
 
-	c.vars(Vars{
+	c.bindVars(Vars{
 		"title": title,
 		"topic": topic,
 	})
@@ -147,7 +147,7 @@ func (c Topic) Hot(page int) revel.Result {
 	title := "最多点击"
 	topics, pagination := getTopics(page, "", "hits", routes.Topic.Hot(page))
 
-	c.vars(Vars{
+	c.bindVars(Vars{
 		"title":      title,
 		"topics":     topics,
 		"pagination": pagination,
@@ -160,7 +160,7 @@ func (c Topic) Good(page int) revel.Result {
 	title := "好帖推荐"
 	topics, pagination := getTopics(page, "good = true", "created", routes.Topic.Good(page))
 
-	c.vars(Vars{
+	c.bindVars(Vars{
 		"title":      title,
 		"topics":     topics,
 		"pagination": pagination,
@@ -183,7 +183,7 @@ func (c Topic) Category(id int64, page int) revel.Result {
 	title := "最近发表"
 	topics, pagination := getTopics(page, fmt.Sprintf("category_id = %d", id), "created", routes.Topic.Category(id, page))
 
-	c.vars(Vars{
+	c.bindVars(Vars{
 		"title":      title,
 		"topics":     topics,
 		"pagination": pagination,

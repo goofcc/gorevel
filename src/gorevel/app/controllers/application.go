@@ -53,7 +53,7 @@ func (c *Application) checkUser() revel.Result {
 		}
 	}
 
-	c.bindArgs()
+	c.addExtraArgs()
 
 	return nil
 }
@@ -80,19 +80,19 @@ func (c *Application) getUser(username string) *models.User {
 	return &user
 }
 
-func (c *Application) bindArgs() {
-	c.vars(Vars{
+func (c *Application) bindVars(vars Vars) {
+	for k, v := range vars {
+		c.RenderArgs[k] = v
+	}
+}
+
+func (c *Application) addExtraArgs() {
+	c.bindVars(Vars{
 		"active":      c.Name,
 		"action":      c.Action,
 		"qiniuDomain": models.QiniuDomain,
 		"categories":  getCategories(),
 	})
-}
-
-func (c *Application) vars(vars Vars) {
-	for k, v := range vars {
-		c.RenderArgs[k] = v
-	}
 }
 
 func saveFile(file *multipart.File, filePath string) error {

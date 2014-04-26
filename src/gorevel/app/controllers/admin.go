@@ -33,7 +33,9 @@ func (c Admin) DeleteUser(id int64) revel.Result {
 }
 
 func (c Admin) ActivateUser(id int64) revel.Result {
-	aff, _ := engine.Id(id).Cols("status").Update(&models.User{Status: models.USER_STATUS_ACTIVATED})
+	aff, _ := engine.Id(id).Cols("status").Update(&models.User{
+		Status: models.USER_STATUS_ACTIVATED,
+	})
 	if aff > 0 {
 		return c.RenderJson(map[string]bool{"status": true})
 	}
@@ -89,7 +91,7 @@ func (c Admin) EditCategory(id int64) revel.Result {
 		return c.NotFound("分类不存在")
 	}
 
-	c.vars(Vars{
+	c.bindVars(Vars{
 		"title":    title,
 		"category": category,
 	})

@@ -69,11 +69,27 @@ func (c User) SigninPost(name, password string) revel.Result {
 
 	var user models.User
 	var count int64
+	var hashedPassword string
 	has, _ := engine.Where("name = ?", name).Get(&user)
 	if has {
-		hashedPassword := models.EncryptPassword(password, user.Salt)
+		// 密码加盐兼容旧密码
+		if user.Salt == "" {
+			hashedPassword = models.EncryptPassword(password, "")
+		} else {
+			hashedPassword = models.EncryptPassword(password, user.Salt)
+		}
+
 		count, _ = engine.Where("name = ? AND hashed_password = ?", name, hashedPassword).Count(&models.User{})
-		revel.WARN.Println(name, hashedPassword, has, user)
+
+		// 密码加盐兼容旧密码
+		if count > 0 && user.Salt == "" {
+			salt := uuidName()
+			hashedPassword = models.EncryptPassword(password, salt)
+			engine.Id(user.Id).Update(&models.User{
+				Salt:           salt,
+				HashedPassword: hashedPassword,
+			})
+		}
 	}
 
 	if !has || count == 0 {
@@ -110,6 +126,7 @@ func (c User) Signout() revel.Result {
 
 func (c User) Edit() revel.Result {
 	avatars := models.Avatars
+
 	return c.Render(avatars)
 }
 
@@ -198,6 +215,7 @@ func (c User) ForgotPasswordPost(email string) revel.Result {
 
 	subject := "重设密码 —— Revel社区"
 	content := `<h2><a href="http://gorevel.cn/reset_password/` + user.ValidateCode + `">重设密码</a></h2>`
+
 	go sendMail(subject, content, []string{user.Email})
 
 	c.Flash.Success(fmt.Sprintf("你好，重设密码的链接已经发送到您的邮箱，请到您的邮箱 %s 重设密码！", user.Email))
@@ -225,7 +243,8 @@ func (c User) ResetPasswordPost(code, password, confirmPassword string) revel.Re
 	}
 
 	salt := uuidName()
-	aff, _ := engine.Id(user.Id).Cols("hashed_password", "validate_code").Update(&models.User{
+
+	aff, _ := engine.Id(user.Id).Update(&models.User{
 		HashedPassword: models.EncryptPassword(password, salt),
 		Salt:           salt,
 		ValidateCode:   "",
