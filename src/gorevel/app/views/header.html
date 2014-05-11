@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
-	<head>
+<head>
 	<title>{{if eq .action "App.Index"}}Revel 中文社区{{else}}{{.title}} - Revel 中文社区{{end}}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="keywords" content="Revel,Revel社区,Revel中文社区,Revel论坛,Revel中国,Revel框架,Go框架,GoWeb框架,GoRevel学习,gorevel社区,gorevel中文社区,Golang,Go社区,Golang中文,Go语言学习,Go语言,学习Go语言, Go语言论坛, Revel,revel,gorevel">
 	<meta name="description" content="Revel中国,Revel中文社区,中国 Revel社区，Go语言学习,Go语言爱好者,Revel,revel,gorevel。">
+	<link rel="shortcut icon" href="{{.qiniuDomain}}/public/img/favicon.ico" />
 	<link rel="stylesheet" type="text/css" href="{{.qiniuDomain}}/public/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="{{.qiniuDomain}}/public/css/bootstrap-responsive.min.css">
 	<link rel="stylesheet" type="text/css" href="{{.qiniuDomain}}/public/css/journal.min.css">
@@ -17,23 +18,12 @@
 
 <!-- 	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700" rel="stylesheet" type="text/css"> -->
 
-	<script src="{{.qiniuDomain}}/public/js/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
-	<script src="{{.qiniuDomain}}/public/js/bootstrap.min.js" type="text/javascript"></script>
-	<script src="{{.qiniuDomain}}/public/js/prettify.js" type="text/javascript"></script>
-	<script src="{{.qiniuDomain}}/public/js/lang-go-rich.js" type="text/javascript"></script>
-	<script src="{{.qiniuDomain}}/public/js/jquery.timeago.js" type="text/javascript"></script>
-	<script type="text/javascript" src="{{.qiniuDomain}}/public/js/jquery.timeago.zh-CN.js"></script>
-
 	{{range .moreStyles}}
 		<link rel="stylesheet" type="text/css" href="{{$.qiniuDomain}}/public/{{.}}">
 	{{end}}
 
-	{{range .moreScripts}}
-		<script src="{{$.qiniuDomain}}/public/{{.}}" type="text/javascript" charset="utf-8"></script>
-	{{end}}
-
-	</head>
-	<body onload="prettyPrint()">
+</head>
+<body onload="prettyPrint()">
 	{{ if eq .title ""}}
 		<a href="https://github.com/goofcc/gorevel" target="_blank" >
 			<img style="position: fixed; top: 0; right: 0; border: 0; z-index:1000;" src="{{.qiniuDomain}}/public/img/forkme_right_orange_ff7600.png" alt="Fork me on GitHub">
@@ -48,9 +38,8 @@
 			<div class="nav-collapse">
 			<ul class="nav">
 				<li {{if eq .active "Topic"}}class="active"{{end}}><a href="{{url "Topic.Index"}}">社区</a></li>
+				<li {{if eq .active "Product"}}class="active"{{end}}><a href="{{url "Product.Index"}}" title="Revel项目案例">案例</a></li>
 				<li><a href="/docs/index.html" target="_blank" title="本站文档">文档</a><img src="/public/img/hot.gif" style="position:relative;top:-40px;left:33px;" /></li>
-				
-				<li><a href="#" title="Revel开源项目">发现</a></li>
 				<li><a href="http://revel.github.io/" target="_blank" title="官方文档">godoc</a></li>
 			</ul>
 

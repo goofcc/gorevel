@@ -24,24 +24,30 @@ GET     /admin/users                            Admin.ListUser
 GET     /admin/user/:id/delete                  Admin.DeleteUser
 GET     /admin/user/:id/activate                Admin.ActivateUser
 
-GET     /admin/category                         Admin.ListCategory
+GET     /admin/categories                       Admin.ListCategory
 GET     /admin/category/new                     Admin.NewCategory
 POST    /admin/category/new                     Admin.NewCategoryPost
 GET     /admin/category/:id/delete              Admin.DeleteCategory
 GET     /admin/category/:id/edit                Admin.EditCategory
 POST    /admin/category/:id/edit                Admin.EditCategoryPost
 
-GET     /topic                                  Topic.Index
-GET     /topic/hot                              Topic.Hot
-GET     /topic/good                             Topic.Good
-GET     /topic/:id/good                         Topic.SetGood
+GET     /topics                                 Topic.Index
+GET     /topics/hot                             Topic.Hot
+GET     /topics/good                            Topic.Good
+GET     /topics/category/:id                    Topic.Category
 GET     /topic/new                              Topic.New
 POST    /topic/new                              Topic.NewPost
 GET     /topic/:id/edit                         Topic.Edit
 POST    /topic/:id/edit                         Topic.EditPost
 GET     /topic/:id                              Topic.Show
 GET     /topic/:id/reply                        Topic.Reply
-GET     /topic/category/:id                     Topic.Category
+GET     /topic/:id/good                         Topic.SetGood
+
+GET     /products                               Product.Index
+GET     /product/new                            Product.New
+POST    /product/new                            Product.NewPost
+GET     /product/:id/edit                       Product.Edit
+POST    /product/:id/edit                       Product.EditPost
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

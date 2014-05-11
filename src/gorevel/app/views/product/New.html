@@ -1,0 +1,101 @@
+{{append . "moreScripts" "js/ckeditor/ckeditor.js"}}
+{{template "header.html" .}}
+
+<div class="container fixed">
+	<div class="row row-fixed">
+		<div class="span9">
+			{{template "flash.html" .}}
+			<div class="page-header">
+				<h3>{{.title}}</h3>
+			</div>
+
+			<form action="{{if .product}}{{url "Product.Edit" .product.Id}}{{else}}{{url "Product.New"}}{{end}}" method="POST" class="form-horizontal" enctype="multipart/form-data">
+				<input type="hidden" name="csrf_token" value="{{ .csrf_token }}" />
+
+				{{with $field := field "product.Name" .}}
+				<div class="control-group topic-fixed">
+					<label class="control-label" for="{{$field.Name}}">案例名称</label>
+					<div class="controls">
+						<input class="input-xxlarge" type="text" name="{{$field.Name}}"
+							value="{{if $.errors}}{{$field.Flash}}{{else}}{{$.product.Name}}{{end}}">
+						<span class="text-error">{{$field.Error}}</span>
+					</div>
+				</div>
+				{{end}}
+
+				{{with $field := field "product.Author" .}}
+				<div class="control-group topic-fixed">
+					<label class="control-label" for="{{$field.Name}}">项目作者</label>
+					<div class="controls">
+						<input class="input-xlarge" type="text" name="{{$field.Name}}"
+							value="{{if $.errors}}{{$field.Flash}}{{else}}{{$.product.Author}}{{end}}">
+						<span class="text-error">{{$field.Error}}</span>
+					</div>
+				</div>
+				{{end}}
+
+				{{with $field := field "product.Site" .}}
+				<div class="control-group topic-fixed">
+					<label class="control-label" for="{{$field.Name}}">官方网址</label>
+					<div class="controls">
+						<input class="input-xlarge" type="text" name="{{$field.Name}}"
+							value="{{if $.errors}}{{$field.Flash}}{{else}}{{$.product.Site}}{{end}}">
+						<span class="text-error">{{$field.Error}}</span>
+					</div>
+				</div>
+				{{end}}
+
+				{{with $field := field "product.Repository" .}}
+				<div class="control-group topic-fixed">
+					<label class="control-label" for="{{$field.Name}}">代码库</label>
+					<div class="controls">
+						<input class="input-xlarge" type="text" name="{{$field.Name}}"
+							value="{{if $.errors}}{{$field.Flash}}{{else}}{{$.product.Repository}}{{end}}" placeholder="代码库地址">
+						<span class="text-error">{{$field.Error}}</span>
+					</div>
+				</div>
+				{{end}}
+
+				{{with $field := field "product.Description" .}}
+				<div class="control-group topic-fixed">
+					<label class="control-label" for="{{$field.Name}}">项目描述</label>
+					<div class="controls">
+						<textarea class="ckeditor" name="{{$field.Name}}" class="span8">
+							{{if $.errors}}{{$field.Flash}}{{else}}{{$.product.Description}}{{end}}
+						</textarea>
+						<span class="text-error">{{$field.Error}}</span>
+					</div>
+				</div>
+				{{end}}
+
+				{{with $field := field "image" .}}
+				<div class="control-group topic-fixed">
+					<label class="control-label" for="{{$field.Name}}">图片</label>
+					<div class="controls">
+						<div class="uploader" id="uniform-fileInput">
+							<input type="file" name="{{$field.Name}}" class="input-file uniform_on" id="{{$field.Name}}">
+							<input type="hidden" name="product.Image" value="{{$.product.Image}}">
+						</div>
+						<span class="text-error">{{$field.Error}}</span>
+						{{if $.product.Image}}
+							<img class="img-rounded" src="{{$.qiniuDomain}}{{$.product.Image}}?imageMogr/v2/thumbnail/340x200!" style="width: 340px; height: 200px;">
+						{{end}}
+					</div>
+				</div>
+				{{end}}
+
+				<div class="control-group topic-fixed">
+					<div class="controls">
+						<button type="submit" class="btn btn-primary">提交案例</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<div class="span3">
+			{{template "product/sidebar.html" .}}
+		</div>
+	</div>
+</div>
+
+{{template "footer.html" .}}

@@ -1,0 +1,18 @@
+
+<div class="well well-none">
+	<div class="btn-group">
+		<a href="{{url "Product.New"}}" class="btn bun-small btn-success">分享案例</a>
+		<button class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+			<span class="caret"></span>
+		</button>
+	</div>
+</div>
+
+<div class="well well-none">
+	<ul class="nav nav-list">
+		<li {{if eq .action "Product.Index"}}class="active"{{end}}><a href="{{url "Product.Index"}}">所有案例</a></li>
+		<li><a href="#">开源案例</a></li>
+		<li><a href="#">商业案例</a></li>
+		<li><a href="#">其他案例</a></li>
+	</ul>
+</div>

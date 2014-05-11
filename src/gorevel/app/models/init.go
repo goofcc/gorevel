@@ -58,6 +58,7 @@ func Init() {
 		new(Topic),
 		new(Reply),
 		new(Permissions),
+		new(Product),
 	)
 
 	if err != nil {

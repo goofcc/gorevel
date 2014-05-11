@@ -1,0 +1,53 @@
+
+{{template "header.html" .}}
+
+<div class="container fixed">
+	<div class="row row-fixed">
+		<div class="span9">
+			<div class="page-header">
+			</div>
+
+			{{range .products}}
+			<div class="row-fluid">
+				<ul class="thumbnails">
+					<li class="span4">
+						{{if .Repository}}
+						<span class="label label-warning pull-left" style="margin:5px;">
+							<a href="{{.Site}}" style="color: white;" target="_blank">开源</a>
+						</span>
+						{{else}}
+						<span class="label pull-left" style="margin:5px;">闭源</span>
+						{{end}}
+						<a href="{{.Site}}" target="_blank" class="thumbnail"><img class="img-rounded" src="http://gorevel.u.qiniudn.com/public/img/Golang.png?imageMogr/v2/thumbnail/340x200!"></a>
+					</li>
+					<li class="span8">
+						<h3>Thumbnail label
+						{{if eq $.user.Id .User.Id}}
+						<a href="{{url "Product.Edit" .Id}}"><i class="icon-edit"></i></a>
+						{{end}}
+						</h3>
+						<p>{{raw .Description}}</p>
+						<address>
+							<strong>作者：</strong>CA 94107<br>
+							{{if .Repository}}
+							<strong>仓库：</strong><a href="{{.Repository}}">{{.Repository}}</a><br>
+							{{end}}
+							<strong>官网：</strong><a href="{{.Site}}">{{.Site}}</a><br>
+							<blockquote class="pull-right">
+								<small>{{.User.Name}} 于 {{date .Created}} 提供</small>
+							</blockquote>
+						</address>
+						
+					</li>
+				</ul>
+			</div>
+			{{end}}
+		</div>
+
+		<div class="span3">
+			{{template "product/sidebar.html" .}}
+		</div>
+	</div>
+</div>
+
+{{template "footer.html" .}}
