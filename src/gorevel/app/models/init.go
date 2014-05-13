@@ -66,8 +66,7 @@ func Init() {
 	}
 
 	// 如果是空数据库，自动添加管理员账号 admin/123
-	count, _ := Engine.Count(new(User))
-	if count == 0 {
+	if count, _ := Engine.Count(new(User)); count == 0 {
 		Engine.Insert(&User{
 			Name:           "admin",
 			Email:          "admin@admin.com",

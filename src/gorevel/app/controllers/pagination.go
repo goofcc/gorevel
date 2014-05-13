@@ -63,7 +63,7 @@ func (p *Pagination) Pages() []PageNum {
 		begin = 0
 	}
 
-	var pageNum int
+	pageNum := 0
 	for ; begin < to; begin++ {
 		pageNum = begin + 1
 		result = append(result, PageNum{pageNum, p.url + strconv.Itoa(pageNum), pageNum == p.page})

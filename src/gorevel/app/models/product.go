@@ -21,8 +21,9 @@ type Product struct {
 }
 
 func (product Product) Validate(v *revel.Validation) {
-	v.Required(product.Name).Message("字段不能为空")
-	v.Required(product.Description).Message("字段不能为空")
+	v.Required(product.Name).Message("不能为空")
+	v.Required(product.Author).Message("不能为空")
+	v.Required(product.Description).Message("不能为空")
 
 	if utf8.RuneCountInString(product.Name) > 20 {
 		err := &revel.ValidationError{
@@ -34,5 +35,5 @@ func (product Product) Validate(v *revel.Validation) {
 }
 
 func (p Product) GetImage() string {
-	return QiniuDomain + p.Image
+	return QiniuDomain + "/" + p.Image
 }

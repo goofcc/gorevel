@@ -18,12 +18,12 @@
 			</ul>
 			<ul class="thumbnails">
 				{{range .avatars}}
-					<li>
-						<label>
-							<img class="img-rounded" src="{{$.qiniuDomain}}/public/img/{{.}}">
-							<input style="margin-left: 16px;" type="radio" name="avatar" value="{{.}}"{{if $.user.IsDefaultAvatar .}} checked{{end}}>
-						</label>
-					</li>
+				<li>
+					<label>
+						<img class="img-rounded" src="{{$.qiniuDomain}}/public/img/{{.}}">
+						<input style="margin-left: 16px;" type="radio" name="avatar" value="{{.}}"{{if $.user.IsDefaultAvatar .}} checked{{end}}>
+					</label>
+				</li>
 				{{end}}
 			</ul>
 
@@ -52,4 +52,5 @@
 		</form>
 	</div>
 </div>
+
 {{template "footer.html" .}}

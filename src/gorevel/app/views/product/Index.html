@@ -11,33 +11,30 @@
 			<div class="row-fluid">
 				<ul class="thumbnails">
 					<li class="span4">
-						{{if .Repository}}
-						<span class="label label-warning pull-left" style="margin:5px;">
-							<a href="{{.Site}}" style="color: white;" target="_blank">开源</a>
-						</span>
-						{{else}}
-						<span class="label pull-left" style="margin:5px;">闭源</span>
-						{{end}}
-						<a href="{{.Site}}" target="_blank" class="thumbnail"><img class="img-rounded" src="http://gorevel.u.qiniudn.com/public/img/Golang.png?imageMogr/v2/thumbnail/340x200!"></a>
+						<a href="{{.Site}}" target="_blank" class="thumbnail">
+							<img src="{{.GetImage}}?imageMogr/v2/thumbnail/220x170!" style="width: 220px; height: 170px;">
+						</a>
 					</li>
+
 					<li class="span8">
-						<h3>Thumbnail label
+						<h3>{{.Name}}
 						{{if eq $.user.Id .User.Id}}
 						<a href="{{url "Product.Edit" .Id}}"><i class="icon-edit"></i></a>
 						{{end}}
+
+							{{if .Repository}}
+							<span class="label label-warning pull-right"><a href="{{.Repository}}" target="_blank" style="color:white;">开源</a></span>
+							{{else}}
+							<span class="label pull-right">闭源</span>
+							{{end}}
 						</h3>
 						<p>{{raw .Description}}</p>
 						<address>
-							<strong>作者：</strong>CA 94107<br>
-							{{if .Repository}}
-							<strong>仓库：</strong><a href="{{.Repository}}">{{.Repository}}</a><br>
-							{{end}}
+							<strong>作者：</strong>{{.Author}}<br>
 							<strong>官网：</strong><a href="{{.Site}}">{{.Site}}</a><br>
-							<blockquote class="pull-right">
-								<small>{{.User.Name}} 于 {{date .Created}} 提供</small>
-							</blockquote>
+							<strong>仓库：</strong><a href="{{.Repository}}">{{.Repository}}</a><br>
+							<small class="muted pull-right">{{.User.Name}} , {{date .Created}} 提供</small>
 						</address>
-						
 					</li>
 				</ul>
 			</div>

@@ -1,8 +1,7 @@
 package controllers
 
 const (
-	_ = iota
-	ADMIN_GROUP
+	ADMIN_GROUP = iota + 1
 	MEMBER_GROUP
 )
 
