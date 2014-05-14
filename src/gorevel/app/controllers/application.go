@@ -141,6 +141,7 @@ func checkFileExt(v *revel.Validation, header *multipart.FileHeader, fileExts, f
 		v.Errors = append(v.Errors, err)
 		return false
 	}
+
 	return true
 }
 

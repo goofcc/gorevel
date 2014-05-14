@@ -47,14 +47,14 @@ func (c Topic) NewPost(topic models.Topic, category int64) revel.Result {
 // 帖子详细
 func (c Topic) Show(id int64) revel.Result {
 	topic := new(models.Topic)
-	idStr := strconv.Itoa(int(id))
-	if err := cache.Get("topic"+idStr, &topic); err != nil {
+	str := strconv.Itoa(int(id))
+
+	if err := cache.Get("topic"+str, &topic); err != nil {
 		has, _ := engine.Id(id).Get(topic)
 		if !has {
 			return c.NotFound("帖子不存在")
 		}
-
-		go cache.Set("topic"+idStr, topic, cache.FOREVER)
+		go cache.Set("topic"+str, topic, cache.FOREVER)
 	}
 
 	topic.Hits += 1
@@ -85,9 +85,9 @@ func (c Topic) Reply(id int64, content string) revel.Result {
 	if aff > 0 {
 		engine.Exec("UPDATE topic SET replies = replies + 1 WHERE id = ?", id)
 
-		idStr := strconv.Itoa(int(id))
-		cache.Delete("topic" + idStr)
-		cache.Delete("replies" + idStr)
+		str := strconv.Itoa(int(id))
+		cache.Delete("topic" + str)
+		cache.Delete("replies" + str)
 		cacheUpdateReplies(id)
 
 	} else {
@@ -254,12 +254,11 @@ func queryDb(page int, where string, order string, url string) ([]models.Topic, 
 
 func getReplies(id int64) []models.Reply {
 	var replies []models.Reply
-	idStr := strconv.Itoa(int(id))
+	str := strconv.Itoa(int(id))
 
-	if err := cache.Get("replies"+idStr, &replies); err != nil {
+	if err := cache.Get("replies"+str, &replies); err != nil {
 		engine.Where("topic_id = ?", id).Find(&replies)
-
-		go cache.Set("replies"+idStr, replies, cache.FOREVER)
+		go cache.Set("replies"+str, replies, cache.FOREVER)
 	}
 
 	return replies

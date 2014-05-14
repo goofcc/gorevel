@@ -12,11 +12,11 @@
 			<form action="{{if .product}}{{url "Product.Edit" .product.Id}}{{else}}{{url "Product.New"}}{{end}}" method="POST" class="form-horizontal" enctype="multipart/form-data">
 				<input type="hidden" name="csrf_token" value="{{ .csrf_token }}" />
 
+				{{if $.product.Image}}
 				<div class="span5 offset5">
-					{{if $.product.Image}}
-						<img class="img-polaroid" style="position:absolute;" src="{{$.product.GetImage}}?imageMogr/v2/thumbnail/220x170!" />
-					{{end}}
+					<img class="img-polaroid" style="position:absolute;" src="{{$.product.GetImage}}?imageMogr/v2/thumbnail/220x170!" />
 				</div>
+				{{end}}
 
 				{{with $field := field "product.Name" .}}
 				<div class="control-group topic-fixed">

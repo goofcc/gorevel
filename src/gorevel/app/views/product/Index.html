@@ -18,9 +18,9 @@
 
 					<li class="span8">
 						<h3>{{.Name}}
-						{{if eq $.user.Id .User.Id}}
-						<a href="{{url "Product.Edit" .Id}}"><i class="icon-edit"></i></a>
-						{{end}}
+							{{if eq $.user.Id .User.Id}}
+							<a href="{{url "Product.Edit" .Id}}"><i class="icon-edit"></i></a>
+							{{end}}
 
 							{{if .Repository}}
 							<span class="label label-warning pull-right"><a href="{{.Repository}}" target="_blank" style="color:white;">开源</a></span>

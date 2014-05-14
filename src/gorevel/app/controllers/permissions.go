@@ -14,6 +14,7 @@ var Permissions = map[string]int{
 	"Admin.EditCategory":   ADMIN_GROUP,
 	"Admin.ListCategory":   ADMIN_GROUP,
 	"Admin.DeleteCategory": ADMIN_GROUP,
+	"Admin.DeleteProduct":  ADMIN_GROUP,
 
 	// Topic
 	"Topic.New":     MEMBER_GROUP,
@@ -23,4 +24,8 @@ var Permissions = map[string]int{
 
 	// User
 	"User.Edit": MEMBER_GROUP,
+
+	// Product
+	"Product.New":  MEMBER_GROUP,
+	"Product.Edit": MEMBER_GROUP,
 }

@@ -13,8 +13,7 @@ type Product struct {
 }
 
 func (c Product) Index() revel.Result {
-	var products []models.Product
-	engine.Find(&products)
+	products := getProducts()
 
 	return c.Render(products)
 }
@@ -60,7 +59,7 @@ func (c Product) NewPost(product models.Product) revel.Result {
 	aff, _ := engine.Insert(&product)
 	if aff > 0 {
 		c.Flash.Success("提交案例成功")
-		cache.Flush()
+		cache.Delete("products")
 	} else {
 		c.Flash.Error("提交案例失败")
 	}
@@ -121,13 +120,21 @@ func (c Product) EditPost(id int64, product models.Product) revel.Result {
 	aff, _ := engine.Id(id).Cols("name", "site", "author", "repository", "description", "image").Update(&product)
 	if aff > 0 {
 		c.Flash.Success("编辑案例成功")
-		cache.Flush()
+		cache.Delete("products")
 	} else {
 		c.Flash.Error("编辑案例失败")
-		c.Validation.Keep()
-		c.FlashParams()
 		return c.Redirect(routes.Product.Edit(id))
 	}
 
 	return c.Redirect(routes.Product.Index())
+}
+
+func getProducts() []models.Product {
+	var products []models.Product
+	if err := cache.Get("products", products); err != nil {
+		engine.Find(&products)
+		go cache.Set("products", products, cache.FOREVER)
+	}
+
+	return products
 }

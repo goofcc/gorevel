@@ -249,6 +249,7 @@ func (c User) ResetPasswordPost(code, password, confirmPassword string) revel.Re
 		Salt:           salt,
 		ValidateCode:   "",
 	})
+
 	if aff > 0 {
 		c.Flash.Success(fmt.Sprintf("%s，你好！重设密码成功，请登录！", user.Name))
 	} else {

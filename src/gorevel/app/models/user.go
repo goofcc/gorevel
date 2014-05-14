@@ -94,6 +94,7 @@ func (u User) HasEmail() bool {
 func EncryptPassword(password, salt string) string {
 	h := md5.New()
 	io.WriteString(h, password+salt)
+
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 

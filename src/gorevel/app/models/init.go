@@ -48,9 +48,6 @@ func Init() {
 	}
 
 	// Engine.ShowSQL = revel.DevMode
-	// Engine.ShowDebug = revel.DevMode
-	// Engine.ShowWarn = revel.DevMode
-	// Engine.ShowErr = revel.DevMode
 
 	err = Engine.Sync(
 		new(User),

@@ -17,7 +17,7 @@
 					<label class="control-label" for="{{$field.Name}}">标题</label>
 					<div class="controls">
 						<input class="input-xxlarge" type="text" name="{{$field.Name}}"
-							value="{{if $.errors}}{{$field.Flash}}{{else if $.topic}}{{$.topic.Title}}{{end}}">
+							value="{{if $.errors}}{{$field.Flash}}{{else}}{{$.topic.Title}}{{end}}">
 						<span class="text-error">{{$field.Error}}</span>
 					</div>
 				</div>
@@ -45,7 +45,7 @@
 					<label class="control-label" for="{{$field.Name}}">内容</label>
 					<div class="controls">
 						<textarea class="ckeditor" name="{{$field.Name}}" class="span8">
-							{{if $.errors}}{{$field.Flash}}{{else if $.topic}}{{$.topic.Content}}{{end}}
+							{{if $.errors}}{{$field.Flash}}{{else}}{{$.topic.Content}}{{end}}
 						</textarea>
 						<span class="text-error">{{$field.Error}}</span>
 					</div>

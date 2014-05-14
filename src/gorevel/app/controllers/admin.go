@@ -73,7 +73,6 @@ func (c Admin) NewCategoryPost(category models.Category) revel.Result {
 	if aff > 0 {
 		c.Flash.Success("添加分类成功")
 		cache.Delete("categories")
-
 	} else {
 		c.Flash.Error("添加分类失败")
 		return c.Redirect(routes.Admin.NewCategory())
