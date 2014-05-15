@@ -30,7 +30,7 @@ func (c Product) NewPost(product models.Product) revel.Result {
 	file, header, err := c.Request.FormFile("image")
 	if err == nil {
 		defer file.Close()
-		if ok := checkFileExt(c.Validation, header, imageExts, "image", "Only image"); ok {
+		if ok := checkImageExt(c.Validation, &file, header, "image"); ok {
 			fileName := uuidFileName(header.Filename)
 			err, ret := qiniuUploadImage(&file, fileName)
 			if err != nil {
@@ -94,7 +94,7 @@ func (c Product) EditPost(id int64, product models.Product) revel.Result {
 	file, header, err := c.Request.FormFile("image")
 	if err == nil {
 		defer file.Close()
-		if ok := checkFileExt(c.Validation, header, imageExts, "image", "Only image"); ok {
+		if ok := checkImageExt(c.Validation, &file, header, "image"); ok {
 			fileName := uuidFileName(header.Filename)
 			err, ret := qiniuUploadImage(&file, fileName)
 			if err != nil {
@@ -131,7 +131,7 @@ func (c Product) EditPost(id int64, product models.Product) revel.Result {
 
 func getProducts() []models.Product {
 	var products []models.Product
-	if err := cache.Get("products", products); err != nil {
+	if err := cache.Get("products", &products); err != nil {
 		engine.Find(&products)
 		go cache.Set("products", products, cache.FOREVER)
 	}

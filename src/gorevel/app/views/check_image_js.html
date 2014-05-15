@@ -1,0 +1,17 @@
+
+<script type="text/javascript">
+	$(document).ready(function(){ 
+		$(':file').change(function(){
+			var file = this.files[0];
+			if (file.type.indexOf("image") == 0) {
+				if (file.size > 500 * 1024) {
+					alert("文件大小不超过500KB");
+					$(':file').val('');
+				}
+			} else {
+				alert("您上传的不是图片");
+				$(':file').val('');
+			}
+		});
+	});
+</script>

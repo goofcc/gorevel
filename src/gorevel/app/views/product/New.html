@@ -23,7 +23,7 @@
 					<label class="control-label" for="{{$field.Name}}">名称</label>
 					<div class="controls">
 						<input class="input-xlarge" type="text" name="{{$field.Name}}"
-							value="{{if $.errors}}{{$field.Flash}}{{else}}{{$.product.Name}}{{end}}"  placeholder="项目名称" />
+							value="{{if $.errors}}{{$field.Flash}}{{else}}{{$.product.Name}}{{end}}"    placeholder="项目名称" />
 						<span class="text-error">{{$field.Error}}</span>
 					</div>
 				</div>
@@ -41,7 +41,7 @@
 					</div>
 				</div>
 				{{end}}
-				
+
 				{{with $field := field "product.Author" .}}
 				<div class="control-group topic-fixed">
 					<label class="control-label" for="{{$field.Name}}">作者</label>
@@ -78,9 +78,7 @@
 				<div class="control-group topic-fixed">
 					<label class="control-label" for="{{$field.Name}}">项目简介</label>
 					<div class="controls">
-						<textarea class="ckeditor" name="{{$field.Name}}" class="span8">
-							{{if $.errors}}{{$field.Flash}}{{else}}{{$.product.Description}}{{end}}
-						</textarea>
+						<textarea class="ckeditor" name="{{$field.Name}}" class="span8">{{if $.errors}}{{$field.Flash}}{{else}}{{$.product.Description}}{{end}}</textarea>
 						<span class="text-error">{{$field.Error}}</span>
 					</div>
 				</div>
@@ -99,5 +97,7 @@
 		</div>
 	</div>
 </div>
+
+{{template "check_image_js.html" .}}
 
 {{template "footer.html" .}}

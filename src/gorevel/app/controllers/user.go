@@ -143,10 +143,10 @@ func (c User) EditPost(avatar string) revel.Result {
 		return c.NotFound("用户不存在")
 	}
 
-	file, header, err := c.Request.FormFile("picture")
+	file, header, err := c.Request.FormFile("image")
 	if err == nil {
 		defer file.Close()
-		if ok := checkFileExt(c.Validation, header, imageExts, "picture", "Only image"); ok {
+		if ok := checkImageExt(c.Validation, &file, header, IMAGE_EXTS); ok {
 			fileName := uuidFileName(header.Filename)
 			err, ret := qiniuUploadImage(&file, fileName)
 			if err != nil {

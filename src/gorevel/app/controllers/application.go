@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"image"
 	"io"
 	"mime/multipart"
@@ -21,12 +22,17 @@ import (
 )
 
 var (
-	engine      *xorm.Engine
-	UPLOAD_PATH string
-	imageExts   string = ".jpg.jpeg.png"
+	engine           *xorm.Engine
+	UPLOAD_PATH      string
+	IMAGE_EXTS       string = ".jpg.jpeg.png"
+	IMAGE_LIMIT_SIZE int64  = 500 * 1024
 )
 
 type Vars map[string]interface{}
+
+type Sizer interface {
+	Size() int64
+}
 
 type Application struct {
 	*revel.Controller
@@ -136,6 +142,28 @@ func checkFileExt(v *revel.Validation, header *multipart.FileHeader, fileExts, f
 	if !strings.Contains(fileExts, strings.ToLower(path.Ext(header.Filename))) {
 		err := &revel.ValidationError{
 			Message: message,
+			Key:     formField,
+		}
+		v.Errors = append(v.Errors, err)
+		return false
+	}
+
+	return true
+}
+
+func checkImageExt(v *revel.Validation, file *multipart.File, header *multipart.FileHeader, formField string) bool {
+	if !strings.Contains(IMAGE_EXTS, strings.ToLower(path.Ext(header.Filename))) {
+		err := &revel.ValidationError{
+			Message: "只能上传图片",
+			Key:     formField,
+		}
+		v.Errors = append(v.Errors, err)
+		return false
+	}
+
+	if (*file).(Sizer).Size() > IMAGE_LIMIT_SIZE {
+		err := &revel.ValidationError{
+			Message: fmt.Sprintf("图片尺寸不超过%dKB", IMAGE_LIMIT_SIZE),
 			Key:     formField,
 		}
 		v.Errors = append(v.Errors, err)
