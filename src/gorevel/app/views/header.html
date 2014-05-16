@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>{{if eq .action "App.Index"}}Revel 中文社区{{else}}{{.title}} - Revel 中文社区{{end}}</title>
+	<title>{{if .title}}{{.title}} - {{end}}Revel 中文社区</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="keywords" content="Revel,Revel社区,Revel中文社区,Revel论坛,Revel中国,Revel框架,Go框架,GoWeb框架,GoRevel学习,gorevel社区,gorevel中文社区,Golang,Go社区,Golang中文,Go语言学习,Go语言,学习Go语言, Go语言论坛, Revel,revel,gorevel">
-	<meta name="description" content="Revel中国,Revel中文社区,中国 Revel社区，Go语言学习,Go语言爱好者,Revel,revel,gorevel。">
+	<meta name="keywords" content="Revel, Revel社区, Revel中文社区, Revel论坛, Revel框架, GoWeb框架, gorevel, Revel, revel, gorevel, Go, go, golang, Golang">
+	<meta name="description" content="Revel中文社区是一个开源的 Go 语言 Revel Web 框架的技术交流平台。">
 	<link rel="shortcut icon" href="{{.qiniuDomain}}/public/img/favicon.ico" />
 	<link rel="stylesheet" type="text/css" href="{{.qiniuDomain}}/public/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="{{.qiniuDomain}}/public/css/bootstrap-responsive.min.css">
@@ -39,7 +39,7 @@
 			<ul class="nav">
 				<li {{if eq .active "Topic"}}class="active"{{end}}><a href="{{url "Topic.Index"}}">社区</a></li>
 				<li {{if eq .active "Product"}}class="active"{{end}}><a href="{{url "Product.Index"}}" title="Revel项目案例">案例</a></li>
-				<li><a href="/docs/index.html" target="_blank" title="本站文档">文档</a><img src="/public/img/hot.gif" style="position:relative;top:-40px;left:33px;" /></li>
+				<li><a href="/docs/index.html" target="_blank" title="本站文档">文档</a><img src="{{.qiniuDomain}}/public/img/hot.gif" style="position:relative;top:-40px;left:33px;" /></li>
 				<li><a href="http://revel.github.io/" target="_blank" title="官方文档">godoc</a></li>
 			</ul>
 

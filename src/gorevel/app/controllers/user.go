@@ -35,6 +35,7 @@ func (c User) SignupPost(user models.User) revel.Result {
 		Salt:           salt,
 		HashedPassword: models.EncryptPassword(user.Password, salt),
 	})
+
 	if aff == 0 {
 		c.Flash.Error("注册用户失败")
 		return c.Redirect(routes.User.Signup())

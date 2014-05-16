@@ -1,3 +1,4 @@
+{{set . "title" "案例"}}
 
 {{template "header.html" .}}
 
@@ -11,7 +12,7 @@
 			<div class="row-fluid">
 				<ul class="thumbnails">
 					<li class="span4">
-						<img  class="thumbnail" src="{{.GetImage}}?imageMogr/v2/thumbnail/220x170!" style="width: 220px; height: 170px;">
+						<a href="{{.GetImage}}" target="_blank" class="thumbnail"><img src="{{.GetImage}}?imageMogr/v2/thumbnail/220x170!" style="width: 220px; height: 170px;"><a>
 					</li>
 
 					<li class="span8">
