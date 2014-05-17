@@ -1,4 +1,4 @@
-{{set . "title" "案例"}}
+{{set . "title" "项目案例"}}
 
 {{template "header.html" .}}
 
@@ -27,14 +27,16 @@
 							<span class="label pull-right">闭源</span>
 							{{end}}
 						</h3>
+
 						<p>{{raw .Description}}</p>
+
 						<address>
-							<strong>作者：</strong>{{.Author}}<br>
-							<strong>官网：</strong><a href="{{.Site}}">{{.Site}}</a><br>
-							{{if .Repository}}
-							<strong>仓库：</strong><a href="{{.Repository}}">{{.Repository}}</a><br>
-							{{end}}
-							<small class="muted pull-right">{{.User.Name}} · {{date .Created}} 提供</small>
+						<strong>作者：</strong>{{.Author}}<br>
+						<strong>官网：</strong><a href="{{.Site}}" target="_blank">{{.Site}}</a><br>
+						{{if .Repository}}
+						<strong>仓库：</strong><a href="{{.Repository}}" target="_blank">{{.Repository}}</a><br>
+						{{end}}
+						<small class="muted pull-right">{{.User.Name}} · {{date .Created}} 提供</small>
 						</address>
 					</li>
 				</ul>

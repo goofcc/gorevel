@@ -185,9 +185,13 @@ func (c User) Validate(code string) revel.Result {
 	}
 
 	user.Status = models.USER_STATUS_ACTIVATED
-	engine.Cols("status").Update(&user)
-
-	c.Flash.Success("您的账号成功激活，请登录！")
+	user.ValidateCode = ""
+	aff, _ := engine.Cols("status", "validate_code").Update(&user)
+	if aff > 0 {
+		c.Flash.Success("您的账号成功激活，请登录！")
+	} else {
+		c.Flash.Error("抱歉，您的账号未能激活，请与管理员联系！")
+	}
 
 	return c.Redirect(routes.User.Signin())
 }
