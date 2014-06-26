@@ -238,7 +238,6 @@ func queryDb(page int, where string, order string, url string) ([]models.Topic, 
 		if err != nil {
 			revel.ERROR.Println(err)
 		}
-
 	} else {
 		rows, _ = engine.Where(where).Count(&models.Topic{})
 		err := engine.Where(where).Omit("Content").Desc(order).Limit(ROWS_PER_PAGE, (page-1)*ROWS_PER_PAGE).Find(&topics)

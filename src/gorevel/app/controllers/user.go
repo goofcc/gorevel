@@ -26,16 +26,13 @@ func (c User) SignupPost(user models.User) revel.Result {
 	}
 
 	salt := uuidName()
-	aff, _ := engine.Insert(&models.User{
-		Name:           user.Name,
-		Email:          user.Email,
-		Type:           MEMBER_GROUP,
-		Avatar:         models.DefaultAvatar,
-		ValidateCode:   uuidName(),
-		Salt:           salt,
-		HashedPassword: models.EncryptPassword(user.Password, salt),
-	})
+	user.Type = MEMBER_GROUP
+	user.Avatar = models.DefaultAvatar
+	user.ValidateCode = uuidName()
+	user.Salt = salt
+	user.HashedPassword = models.EncryptPassword(user.Password, salt)
 
+	aff, _ := engine.Insert(&user)
 	if aff == 0 {
 		c.Flash.Error("注册用户失败")
 		return c.Redirect(routes.User.Signup())
