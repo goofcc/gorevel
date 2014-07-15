@@ -12,9 +12,9 @@
 					<img src="{{$.qiniuDomain}}{{.User.AvatarImgSrc}}" class="img-rounded"></img>
 				</a>
 				<div class="media-body">
-					<span class="time pull-right">
-						<abbr class="timeago" title="{{datetime .Created}}+00:00"></abbr>
-					</span>
+					{{if .Replies}}
+					<span class="badge badge-info pull-right">{{.Replies}}</span>
+					{{end}}
 					<h4 class="media-heading">
 						<a href="{{url "Topic.Show" .Id}}" style="font-size: 15px;">{{.Title}}</a>
 						{{if eq .User.Id $.user.Id}}
@@ -22,10 +22,9 @@
 						{{end}}
 					</h4>
 					<span class="label">{{.Category.Name}}</span> •
-					<span class="">{{.User.Name}}</span>
-					{{if .Replies}}
-					<span class="badge badge-info pull-right">{{.Replies}}</span>
-					{{end}}
+					<span class="">{{.User.Name}}</span> •
+					<abbr class="timeago" title="{{datetime .Created}}+00:00"></abbr>
+					
 				</div>
 			</div>
 			{{end}}

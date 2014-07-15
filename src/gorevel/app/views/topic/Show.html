@@ -1,3 +1,4 @@
+
 {{append . "moreScripts" "js/ckeditor/ckeditor.js"}}
 {{template "header.html" .}}
 
@@ -6,26 +7,24 @@
 		<div class="span9">
 			<div class="well well-white">
 				<div class="media border-none">
-
 					{{with .topic}}
 					<a class="pull-left" href="#">
 						<img src="{{$.qiniuDomain}}{{.User.AvatarImgSrc}}" class="img-rounded"></img>
 					</a>
 					<div class="media-body">
-						<span class="time pull-right">
-							<abbr class="timeago" title="{{datetime .Created}}+00:00"></abbr>
-						</span>
+						{{if .Replies}}
+							<span class="badge badge-info pull-right">{{.Replies}}</span>
+						{{end}}
 						<h4 class="media-heading">{{.Title}} 
 							{{if eq .User.Id $.user.Id}}
 							<a href="{{url "Topic.Edit" .Id}}"><i class="icon-edit"></i></a>
 							{{end}}
 						</h4>
 						<span class="label">{{.Category.Name}}</span> • 
-						<span class="">{{.User.Name}}</span>
+						<span class="">{{.User.Name}}</span> •
+						<abbr class="timeago" title="{{datetime .Created}}+00:00"></abbr>
 						{{if .Hits}} • <span class="">{{.Hits}}</span> 次浏览{{end}}
-						{{if .Replies}}
-							<span class="badge badge-info pull-right">{{.Replies}}</span>
-						{{end}}
+						
 						<hr>
 						{{raw .Content}}
 					</div>
