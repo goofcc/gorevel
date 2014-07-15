@@ -21,9 +21,8 @@
 						<a href="{{url "Topic.Edit" .Id}}"><i class="icon-edit"></i></a>
 						{{end}}
 					</h4>
-					<span class="label">{{.Category.Name}}</span> ·
+					<span class="label">{{.Category.Name}}</span> •
 					<span class="">{{.User.Name}}</span>
-					{{if .Hits}} · <span class="">{{.Hits}} 次浏览</i></span>{{end}}
 					{{if .Replies}}
 					<span class="badge badge-info pull-right">{{.Replies}}</span>
 					{{end}}

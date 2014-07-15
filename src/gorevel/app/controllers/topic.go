@@ -59,7 +59,6 @@ func (c Topic) Show(id int64) revel.Result {
 
 	topic.Hits += 1
 	engine.Id(id).Cols("hits").Update(topic)
-	cacheUpdateHits(id)
 
 	replies := getReplies(id)
 
@@ -88,7 +87,6 @@ func (c Topic) Reply(id int64, content string) revel.Result {
 		str := strconv.Itoa(int(id))
 		cache.Delete("topic" + str)
 		cache.Delete("replies" + str)
-		cacheUpdateReplies(id)
 
 	} else {
 		c.Flash.Error("发表回复失败")
