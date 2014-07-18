@@ -8,6 +8,11 @@ import (
 	"gorevel/app/models"
 )
 
+var (
+	SUCCESS_JSON = map[string]bool{"status": true}
+	ERROR_JSON   = map[string]bool{"status": false}
+)
+
 func init() {
 	revel.OnAppStart(Init)
 	revel.InterceptMethod((*Application).checkUser, revel.BEFORE)

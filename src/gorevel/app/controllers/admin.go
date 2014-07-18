@@ -26,10 +26,10 @@ func (c Admin) ListUser() revel.Result {
 func (c Admin) DeleteUser(id int64) revel.Result {
 	aff, _ := engine.Id(id).Delete(&models.User{})
 	if aff > 0 {
-		return c.RenderJson(map[string]bool{"status": true})
+		return c.RenderJson(SUCCESS_JSON)
 	}
 
-	return c.RenderJson(map[string]bool{"status": false})
+	return c.RenderJson(ERROR_JSON)
 }
 
 func (c Admin) ActivateUser(id int64) revel.Result {
@@ -37,10 +37,10 @@ func (c Admin) ActivateUser(id int64) revel.Result {
 		Status: models.USER_STATUS_ACTIVATED,
 	})
 	if aff > 0 {
-		return c.RenderJson(map[string]bool{"status": true})
+		return c.RenderJson(SUCCESS_JSON)
 	}
 
-	return c.RenderJson(map[string]bool{"status": false})
+	return c.RenderJson(ERROR_JSON)
 }
 
 func (c Admin) ListCategory() revel.Result {
@@ -50,10 +50,10 @@ func (c Admin) ListCategory() revel.Result {
 func (c Admin) DeleteCategory(id int64) revel.Result {
 	aff, _ := engine.Id(id).Delete(&models.Category{})
 	if aff > 0 {
-		return c.RenderJson(map[string]bool{"status": true})
+		return c.RenderJson(SUCCESS_JSON)
 	}
 
-	return c.RenderJson(map[string]bool{"status": false})
+	return c.RenderJson(ERROR_JSON)
 }
 
 func (c Admin) NewCategory() revel.Result {

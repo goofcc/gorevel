@@ -83,11 +83,7 @@ func (c Topic) Reply(id int64, content string) revel.Result {
 
 	if aff > 0 {
 		engine.Exec("UPDATE topic SET replies = replies + 1 WHERE id = ?", id)
-
-		str := strconv.Itoa(int(id))
-		cache.Delete("topic" + str)
-		cache.Delete("replies" + str)
-
+		cache.Flush()
 	} else {
 		c.Flash.Error("发表回复失败")
 	}

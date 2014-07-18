@@ -35,7 +35,7 @@ func (c Product) NewPost(product models.Product) revel.Result {
 			err, ret := qiniuUploadImage(&file, fileName)
 			if err != nil {
 				c.Flash.Error("上传到七牛出错，请检查七牛配置。")
-				return c.Redirect(routes.User.Edit())
+				return c.Redirect(routes.Product.New())
 			} else {
 				product.Image = ret.Key
 			}
@@ -99,7 +99,7 @@ func (c Product) EditPost(id int64, product models.Product) revel.Result {
 			err, ret := qiniuUploadImage(&file, fileName)
 			if err != nil {
 				c.Flash.Error("上传到七牛出错，请检查七牛配置。")
-				return c.Redirect(routes.User.Edit())
+				return c.Redirect(routes.Product.Edit(id))
 			} else {
 				if tmp.Image != "" {
 					qiniuDeleteImage(tmp.Image)
@@ -117,7 +117,8 @@ func (c Product) EditPost(id int64, product models.Product) revel.Result {
 		return c.Redirect(routes.Product.Edit(id))
 	}
 
-	aff, _ := engine.Id(id).Cols("name", "site", "author", "repository", "description", "image").Update(&product)
+	// 强制更新允许空值的字段
+	aff, _ := engine.Id(id).MustCols("site", "repository").Update(&product)
 	if aff > 0 {
 		c.Flash.Success("编辑案例成功")
 		cache.Delete("products")
