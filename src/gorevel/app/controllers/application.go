@@ -1,7 +1,10 @@
 package controllers
 
 import (
+	"code.google.com/p/go-uuid/uuid"
 	"fmt"
+	"github.com/disintegration/imaging"
+	"github.com/revel/revel/cache"
 	"image"
 	"io"
 	"mime/multipart"
@@ -9,20 +12,18 @@ import (
 	"os"
 	"path"
 	"strings"
-
-	"code.google.com/p/go-uuid/uuid"
-	"github.com/disintegration/imaging"
-	"github.com/go-xorm/xorm"
+	// "github.com/go-xorm/xorm"
+	"github.com/nashtsai/xormrevelmodule"
 	qio "github.com/qiniu/api/io"
 	"github.com/qiniu/api/rs"
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 
 	"gorevel/app/models"
 	"gorevel/app/routes"
 )
 
 var (
-	engine           *xorm.Engine
+	//engine           *xorm.Engine
 	UPLOAD_PATH      string
 	IMAGE_EXTS       string = ".jpg.jpeg.png"
 	IMAGE_LIMIT_SIZE int64  = 500 * 1024
@@ -36,6 +37,7 @@ type Sizer interface {
 
 type Application struct {
 	*revel.Controller
+	xormmodule.XormController
 }
 
 func (c *Application) checkUser() revel.Result {
@@ -78,7 +80,7 @@ func (c *Application) user() *models.User {
 
 func (c *Application) getUser(username string) *models.User {
 	var user models.User
-	has, _ := engine.Where("name = ?", username).Get(&user)
+	has, _ := c.Engine.Where("name = ?", username).Get(&user)
 	if !has {
 		return nil
 	}
@@ -223,4 +225,14 @@ Content-Type: text/html;charset=UTF-8
 	}
 
 	return nil
+}
+
+func getCategories() []models.Category {
+	var categories []models.Category
+	if err := cache.Get("categories", &categories); err != nil {
+		xormmodule.Engine.Find(&categories)
+		go cache.Set("categories", categories, cache.FOREVER)
+	}
+
+	return categories
 }

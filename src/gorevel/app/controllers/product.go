@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/robfig/revel"
-	"github.com/robfig/revel/cache"
+	"github.com/revel/revel"
+	"github.com/revel/revel/cache"
 
 	"gorevel/app/models"
 	"gorevel/app/routes"
@@ -13,7 +13,7 @@ type Product struct {
 }
 
 func (c Product) Index() revel.Result {
-	products := getProducts()
+	products := c.getProducts()
 
 	return c.Render(products)
 }
@@ -56,7 +56,7 @@ func (c Product) NewPost(product models.Product) revel.Result {
 
 	product.User = models.User{Id: c.user().Id}
 
-	aff, _ := engine.Insert(&product)
+	aff, _ := c.Engine.Insert(&product)
 	if aff > 0 {
 		c.Flash.Success("提交案例成功")
 		cache.Delete("products")
@@ -69,7 +69,7 @@ func (c Product) NewPost(product models.Product) revel.Result {
 
 func (c Product) Edit(id int64) revel.Result {
 	var product models.Product
-	has, _ := engine.Id(id).Get(&product)
+	has, _ := c.Engine.Id(id).Get(&product)
 	if !has {
 		return c.NotFound("案例不存在")
 	}
@@ -84,7 +84,7 @@ func (c Product) Edit(id int64) revel.Result {
 
 func (c Product) EditPost(id int64, product models.Product) revel.Result {
 	var tmp models.Product
-	has, _ := engine.Id(id).Get(&tmp)
+	has, _ := c.Engine.Id(id).Get(&tmp)
 	if !has {
 		return c.NotFound("案例不存在")
 	}
@@ -118,7 +118,7 @@ func (c Product) EditPost(id int64, product models.Product) revel.Result {
 	}
 
 	// 强制更新允许空值的字段
-	aff, _ := engine.Id(id).MustCols("site", "repository").Update(&product)
+	aff, _ := c.Engine.Id(id).MustCols("site", "repository").Update(&product)
 	if aff > 0 {
 		c.Flash.Success("编辑案例成功")
 		cache.Delete("products")
@@ -130,10 +130,10 @@ func (c Product) EditPost(id int64, product models.Product) revel.Result {
 	return c.Redirect(routes.Product.Index())
 }
 
-func getProducts() []models.Product {
+func (c Product) getProducts() []models.Product {
 	var products []models.Product
 	if err := cache.Get("products", &products); err != nil {
-		engine.Find(&products)
+		c.Engine.Find(&products)
 		go cache.Set("products", products, cache.FOREVER)
 	}
 

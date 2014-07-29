@@ -3,9 +3,9 @@ package controllers
 import (
 	"strconv"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 
-	"gorevel/app/models"
+	//"gorevel/app/models"
 )
 
 var (
@@ -23,6 +23,6 @@ func init() {
 }
 
 func Init() {
-	engine = models.Engine
+	//engine = models.Engine
 	UPLOAD_PATH = revel.BasePath + "/public/upload/"
 }

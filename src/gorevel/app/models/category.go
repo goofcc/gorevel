@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 type Category struct {

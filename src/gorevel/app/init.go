@@ -2,7 +2,7 @@ package app
 
 import (
 	// "github.com/cbonello/revel-csrf"
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 func init() {
