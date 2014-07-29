@@ -4,7 +4,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 type Topic struct {

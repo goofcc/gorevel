@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/robfig/revel"
-	"github.com/robfig/revel/cache"
+	"github.com/revel/revel"
+	"github.com/revel/revel/cache"
 
 	"gorevel/app/models"
 	"gorevel/app/routes"
@@ -33,7 +33,7 @@ func (c Topic) NewPost(topic models.Topic, category int64) revel.Result {
 	topic.User = models.User{Id: c.user().Id}
 	topic.Category = models.Category{Id: category}
 
-	aff, _ := engine.Insert(&topic)
+	aff, _ := c.Engine.Insert(&topic)
 	if aff > 0 {
 		c.Flash.Success("发表新帖成功")
 		cache.Flush()
@@ -50,7 +50,7 @@ func (c Topic) Show(id int64) revel.Result {
 	str := strconv.Itoa(int(id))
 
 	if err := cache.Get("topic"+str, &topic); err != nil {
-		has, _ := engine.Id(id).Get(topic)
+		has, _ := c.Engine.Id(id).Get(topic)
 		if !has {
 			return c.NotFound("帖子不存在")
 		}
@@ -58,9 +58,9 @@ func (c Topic) Show(id int64) revel.Result {
 	}
 
 	topic.Hits += 1
-	engine.Id(id).Cols("hits").Update(topic)
+	c.Engine.Id(id).Cols("hits").Update(topic)
 
-	replies := getReplies(id)
+	replies := c.getReplies(id)
 
 	title := topic.Title
 	return c.Render(title, topic, replies)
@@ -75,14 +75,14 @@ func (c Topic) Reply(id int64, content string) revel.Result {
 		return c.Redirect(routes.Topic.Show(id))
 	}
 
-	aff, _ := engine.Insert(&models.Reply{
+	aff, _ := c.Engine.Insert(&models.Reply{
 		Topic:   models.Topic{Id: id},
 		User:    models.User{Id: c.user().Id},
 		Content: content,
 	})
 
 	if aff > 0 {
-		engine.Exec("UPDATE topic SET replies = replies + 1 WHERE id = ?", id)
+		c.Engine.Exec("UPDATE topic SET replies = replies + 1 WHERE id = ?", id)
 		cache.Flush()
 	} else {
 		c.Flash.Error("发表回复失败")
@@ -95,7 +95,7 @@ func (c Topic) Edit(id int64) revel.Result {
 	title := "编辑帖子"
 
 	var topic models.Topic
-	has, _ := engine.Id(id).Get(&topic)
+	has, _ := c.Engine.Id(id).Get(&topic)
 	if !has {
 		return c.NotFound("帖子不存在")
 	}
@@ -118,7 +118,7 @@ func (c Topic) EditPost(id int64, topic models.Topic, category int64) revel.Resu
 
 	topic.Category = models.Category{Id: category}
 
-	aff, _ := engine.Id(id).Cols("title", "category_id", "content").Update(&topic)
+	aff, _ := c.Engine.Id(id).Cols("title", "category_id", "content").Update(&topic)
 	if aff > 0 {
 		c.Flash.Success("编辑帖子成功")
 		cache.Flush()
@@ -132,14 +132,14 @@ func (c Topic) EditPost(id int64, topic models.Topic, category int64) revel.Resu
 // 帖子列表
 func (c Topic) Index(page int) revel.Result {
 	title := "最近发表"
-	topics, pagination := getTopics(page, "", "created", routes.Topic.Index(page))
+	topics, pagination := c.getTopics(page, "", "created", routes.Topic.Index(page))
 
 	return c.Render(title, topics, pagination)
 }
 
 func (c Topic) Hot(page int) revel.Result {
 	title := "最多点击"
-	topics, pagination := getTopics(page, "", "hits", routes.Topic.Hot(page))
+	topics, pagination := c.getTopics(page, "", "hits", routes.Topic.Hot(page))
 
 	c.bindVars(Vars{
 		"title":      title,
@@ -152,7 +152,7 @@ func (c Topic) Hot(page int) revel.Result {
 
 func (c Topic) Good(page int) revel.Result {
 	title := "好帖推荐"
-	topics, pagination := getTopics(page, "good = true", "created", routes.Topic.Good(page))
+	topics, pagination := c.getTopics(page, "good = true", "created", routes.Topic.Good(page))
 
 	c.bindVars(Vars{
 		"title":      title,
@@ -164,7 +164,7 @@ func (c Topic) Good(page int) revel.Result {
 }
 
 func (c Topic) SetGood(id int64) revel.Result {
-	aff, _ := engine.Id(id).Cols("good").Update(&models.Topic{Good: true})
+	aff, _ := c.Engine.Id(id).Cols("good").Update(&models.Topic{Good: true})
 	if aff > 0 {
 		return c.RenderJson(map[string]bool{"status": true})
 	}
@@ -175,7 +175,7 @@ func (c Topic) SetGood(id int64) revel.Result {
 // 帖子分类查询，帖子列表按时间排序
 func (c Topic) Category(id int64, page int) revel.Result {
 	title := "最近发表"
-	topics, pagination := getTopics(page, fmt.Sprintf("category_id = %d", id), "created", routes.Topic.Category(id, page))
+	topics, pagination := c.getTopics(page, fmt.Sprintf("category_id = %d", id), "created", routes.Topic.Category(id, page))
 
 	c.bindVars(Vars{
 		"title":      title,
@@ -186,7 +186,7 @@ func (c Topic) Category(id int64, page int) revel.Result {
 	return c.RenderTemplate("topic/Index.html")
 }
 
-func getTopics(page int, where string, order string, url string) ([]models.Topic, *Pagination) {
+func (c Topic) getTopics(page int, where string, order string, url string) ([]models.Topic, *Pagination) {
 	if page < 1 {
 		page = 1
 		url = url[:strings.Index(url, "=")+1] + "1"
@@ -197,13 +197,13 @@ func getTopics(page int, where string, order string, url string) ([]models.Topic
 
 	if page > models.CachePageSize {
 		// 当前页超出缓存页，从数据库取数据
-		topics, pagination = queryDb(page, where, order, url)
+		topics, pagination = c.queryDb(page, where, order, url)
 
 	} else {
 		// 当前页在缓存中，从缓存中取数据
 		if err := cache.Get("topics"+url, &topics); err != nil {
 			// 缓存中没有找到，查数据库
-			topics, pagination = queryDb(page, where, order, url)
+			topics, pagination = c.queryDb(page, where, order, url)
 			if len(topics) == 0 {
 				return topics, pagination
 			}
@@ -222,19 +222,19 @@ func getTopics(page int, where string, order string, url string) ([]models.Topic
 	return topics, pagination
 }
 
-func queryDb(page int, where string, order string, url string) ([]models.Topic, *Pagination) {
+func (c Topic) queryDb(page int, where string, order string, url string) ([]models.Topic, *Pagination) {
 	var topics []models.Topic
 	var pagination *Pagination
 	var rows int64
 	if where == "" {
-		rows, _ = engine.Count(&models.Topic{})
-		err := engine.Omit("Content").Desc(order).Limit(ROWS_PER_PAGE, (page-1)*ROWS_PER_PAGE).Find(&topics)
+		rows, _ = c.Engine.Count(&models.Topic{})
+		err := c.Engine.Omit("Content").Desc(order).Limit(ROWS_PER_PAGE, (page-1)*ROWS_PER_PAGE).Find(&topics)
 		if err != nil {
 			revel.ERROR.Println(err)
 		}
 	} else {
-		rows, _ = engine.Where(where).Count(&models.Topic{})
-		err := engine.Where(where).Omit("Content").Desc(order).Limit(ROWS_PER_PAGE, (page-1)*ROWS_PER_PAGE).Find(&topics)
+		rows, _ = c.Engine.Where(where).Count(&models.Topic{})
+		err := c.Engine.Where(where).Omit("Content").Desc(order).Limit(ROWS_PER_PAGE, (page-1)*ROWS_PER_PAGE).Find(&topics)
 		if err != nil {
 			revel.ERROR.Println(err)
 		}
@@ -245,12 +245,12 @@ func queryDb(page int, where string, order string, url string) ([]models.Topic, 
 	return topics, pagination
 }
 
-func getReplies(id int64) []models.Reply {
+func (c Topic) getReplies(id int64) []models.Reply {
 	var replies []models.Reply
 	str := strconv.Itoa(int(id))
 
 	if err := cache.Get("replies"+str, &replies); err != nil {
-		engine.Where("topic_id = ?", id).Find(&replies)
+		c.Engine.Where("topic_id = ?", id).Find(&replies)
 		go cache.Set("replies"+str, replies, cache.FOREVER)
 	}
 

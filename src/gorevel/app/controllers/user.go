@@ -3,7 +3,7 @@ package controllers
 import (
 	"fmt"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 
 	"gorevel/app/models"
 	"gorevel/app/routes"
@@ -32,7 +32,7 @@ func (c User) SignupPost(user models.User) revel.Result {
 	user.Salt = salt
 	user.HashedPassword = models.EncryptPassword(user.Password, salt)
 
-	aff, _ := engine.Insert(&user)
+	aff, _ := c.Engine.Insert(&user)
 	if aff == 0 {
 		c.Flash.Error("注册用户失败")
 		return c.Redirect(routes.User.Signup())
@@ -44,7 +44,7 @@ func (c User) SignupPost(user models.User) revel.Result {
 
 	c.Flash.Success(fmt.Sprintf("%s 注册成功，请到您的邮箱 %s 激活账号！", user.Name, user.Email))
 
-	engine.Insert(&models.Permissions{
+	c.Engine.Insert(&models.Permissions{
 		UserId: user.Id,
 		Perm:   MEMBER_GROUP,
 	})
@@ -68,7 +68,7 @@ func (c User) SigninPost(name, password string) revel.Result {
 	var user models.User
 	var count int64
 	var hashedPassword string
-	has, _ := engine.Where("name = ?", name).Get(&user)
+	has, _ := c.Engine.Where("name = ?", name).Get(&user)
 	if has {
 		// 密码加盐兼容旧密码
 		if user.Salt == "" {
@@ -77,13 +77,13 @@ func (c User) SigninPost(name, password string) revel.Result {
 			hashedPassword = models.EncryptPassword(password, user.Salt)
 		}
 
-		count, _ = engine.Where("name = ? AND hashed_password = ?", name, hashedPassword).Count(&models.User{})
+		count, _ = c.Engine.Where("name = ? AND hashed_password = ?", name, hashedPassword).Count(&models.User{})
 
 		// 密码加盐兼容旧密码
 		if count > 0 && user.Salt == "" {
 			salt := uuidName()
 			hashedPassword = models.EncryptPassword(password, salt)
-			engine.Id(user.Id).Update(&models.User{
+			c.Engine.Id(user.Id).Update(&models.User{
 				Salt:           salt,
 				HashedPassword: hashedPassword,
 			})
@@ -136,7 +136,7 @@ func (c User) EditPost(avatar string) revel.Result {
 	}
 
 	var user models.User
-	has, _ := engine.Id(c.user().Id).Get(&user)
+	has, _ := c.Engine.Id(c.user().Id).Get(&user)
 	if !has {
 		return c.NotFound("用户不存在")
 	}
@@ -164,7 +164,7 @@ func (c User) EditPost(avatar string) revel.Result {
 		user.Avatar = avatar
 	}
 
-	aff, _ := engine.Id(c.user().Id).Cols("avatar").Update(&user)
+	aff, _ := c.Engine.Id(c.user().Id).Cols("avatar").Update(&user)
 	if aff > 0 {
 		c.Flash.Success("保存成功")
 	} else {
@@ -176,14 +176,14 @@ func (c User) EditPost(avatar string) revel.Result {
 
 func (c User) Validate(code string) revel.Result {
 	var user models.User
-	has, _ := engine.Where("validate_code = ?", code).Get(&user)
+	has, _ := c.Engine.Where("validate_code = ?", code).Get(&user)
 	if !has {
 		return c.NotFound("用户不存在或校验码错误")
 	}
 
 	user.Status = models.USER_STATUS_ACTIVATED
 	user.ValidateCode = ""
-	aff, _ := engine.Cols("status", "validate_code").Update(&user)
+	aff, _ := c.Engine.Cols("status", "validate_code").Update(&user)
 	if aff > 0 {
 		c.Flash.Success("您的账号成功激活，请登录！")
 	} else {
@@ -207,13 +207,13 @@ func (c User) ForgotPasswordPost(email string) revel.Result {
 	}
 
 	var user models.User
-	has, _ := engine.Where("email = ?", email).Get(&user)
+	has, _ := c.Engine.Where("email = ?", email).Get(&user)
 	if !has {
 		return c.NotFound("用户不存在")
 	}
 
 	user.ValidateCode = uuidName()
-	engine.Where("email = ?", email).Cols("validate_code").Update(&user)
+	c.Engine.Where("email = ?", email).Cols("validate_code").Update(&user)
 
 	subject := "重设密码 —— Revel社区"
 	content := `<h2><a href="http://gorevel.cn/reset_password/` + user.ValidateCode + `">重设密码</a></h2>`
@@ -231,7 +231,7 @@ func (c User) ResetPassword(code string) revel.Result {
 
 func (c User) ResetPasswordPost(code, password, confirmPassword string) revel.Result {
 	var user models.User
-	has, _ := engine.Where("validate_code = ?", code).Get(&user)
+	has, _ := c.Engine.Where("validate_code = ?", code).Get(&user)
 	if code == "" || !has {
 		return c.NotFound("用户不存在或验证码错误")
 	}
@@ -246,7 +246,7 @@ func (c User) ResetPasswordPost(code, password, confirmPassword string) revel.Re
 
 	salt := uuidName()
 
-	aff, _ := engine.Id(user.Id).Update(&models.User{
+	aff, _ := c.Engine.Id(user.Id).Update(&models.User{
 		HashedPassword: models.EncryptPassword(password, salt),
 		Salt:           salt,
 		ValidateCode:   "",

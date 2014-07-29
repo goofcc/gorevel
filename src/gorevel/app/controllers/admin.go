@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/robfig/revel"
-	"github.com/robfig/revel/cache"
+	"github.com/revel/revel"
+	"github.com/revel/revel/cache"
 
 	"gorevel/app/models"
 	"gorevel/app/routes"
@@ -18,13 +18,13 @@ func (c Admin) Index() revel.Result {
 
 func (c Admin) ListUser() revel.Result {
 	var users []models.User
-	engine.Find(&users)
+	c.Engine.Find(&users)
 
 	return c.Render(users)
 }
 
 func (c Admin) DeleteUser(id int64) revel.Result {
-	aff, _ := engine.Id(id).Delete(&models.User{})
+	aff, _ := c.Engine.Id(id).Delete(&models.User{})
 	if aff > 0 {
 		return c.RenderJson(SUCCESS_JSON)
 	}
@@ -33,7 +33,7 @@ func (c Admin) DeleteUser(id int64) revel.Result {
 }
 
 func (c Admin) ActivateUser(id int64) revel.Result {
-	aff, _ := engine.Id(id).Cols("status").Update(&models.User{
+	aff, _ := c.Engine.Id(id).Cols("status").Update(&models.User{
 		Status: models.USER_STATUS_ACTIVATED,
 	})
 	if aff > 0 {
@@ -48,7 +48,7 @@ func (c Admin) ListCategory() revel.Result {
 }
 
 func (c Admin) DeleteCategory(id int64) revel.Result {
-	aff, _ := engine.Id(id).Delete(&models.Category{})
+	aff, _ := c.Engine.Id(id).Delete(&models.Category{})
 	if aff > 0 {
 		return c.RenderJson(SUCCESS_JSON)
 	}
@@ -69,7 +69,7 @@ func (c Admin) NewCategoryPost(category models.Category) revel.Result {
 		return c.Redirect(routes.Admin.NewCategory())
 	}
 
-	aff, _ := engine.Insert(&category)
+	aff, _ := c.Engine.Insert(&category)
 	if aff > 0 {
 		c.Flash.Success("添加分类成功")
 		cache.Delete("categories")
@@ -85,7 +85,7 @@ func (c Admin) EditCategory(id int64) revel.Result {
 	title := "编辑分类"
 
 	var category models.Category
-	has, _ := engine.Id(id).Get(&category)
+	has, _ := c.Engine.Id(id).Get(&category)
 	if !has {
 		return c.NotFound("分类不存在")
 	}
@@ -107,7 +107,7 @@ func (c Admin) EditCategoryPost(id int64, category models.Category) revel.Result
 		return c.Redirect(routes.Admin.EditCategory(id))
 	}
 
-	aff, _ := engine.Id(id).Update(&category)
+	aff, _ := c.Engine.Id(id).Update(&category)
 	if aff > 0 {
 		c.Flash.Success("编辑分类成功")
 		cache.Flush()
@@ -117,14 +117,4 @@ func (c Admin) EditCategoryPost(id int64, category models.Category) revel.Result
 	}
 
 	return c.Redirect(routes.Admin.ListCategory())
-}
-
-func getCategories() []models.Category {
-	var categories []models.Category
-	if err := cache.Get("categories", &categories); err != nil {
-		engine.Find(&categories)
-		go cache.Set("categories", categories, cache.FOREVER)
-	}
-
-	return categories
 }

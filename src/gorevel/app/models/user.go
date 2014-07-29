@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/robfig/revel"
+	"github.com/revel/revel"
 )
 
 const (
