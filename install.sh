@@ -5,8 +5,8 @@ CURDIR=`pwd`
 OLDGOPATH="$GOPATH"
 export GOPATH="$CURDIR"
 
-go get -u github.com/robfig/revel
-go get -u github.com/robfig/revel/revel
+go get -u github.com/revel/revel
+go get -u github.com/revel/cmd/revel
 go get -u github.com/coocood/qbs
 go get -u github.com/coocood/mysql
 go get -u code.google.com/p/go-uuid/uuid
