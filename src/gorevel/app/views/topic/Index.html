@@ -24,7 +24,7 @@
 					<span class="label">{{.Category.Name}}</span> •
 					<span class="">{{.User.Name}}</span> •
 					<abbr class="timeago" title="{{datetime .Created}}+00:00"></abbr>
-					
+					{{if .Hits}} • <span class="">{{.Hits}}</span> 次浏览{{end}}
 				</div>
 			</div>
 			{{end}}
