@@ -55,6 +55,7 @@ GET     /favicon.ico                            404
 # Map static resources from the /app/public folder to the /public path
 GET     /public/*filepath                       Static.Serve("public")
 GET     /docs/*filepath                         Static.Serve("public/docs")
+GET     /baidu_verify_FuNp2WrDBm.html    Static.Serve("public/baidu_verify_FuNp2WrDBm.html")
 
 # Catch all
 *       /:controller/:action                    :controller.:action
