@@ -92,16 +92,18 @@ func (c Topic) Reply(id int64, content string) revel.Result {
 }
 
 func (c Topic) Edit(id int64) revel.Result {
-	title := "编辑帖子"
-
 	var topic models.Topic
 	has, _ := engine.Id(id).Get(&topic)
 	if !has {
 		return c.NotFound("帖子不存在")
 	}
 
+	if user := c.user(); user.Id != topic.User.Id {
+		return c.Forbidden("抱歉，您没有权限")
+	}
+
 	c.bindVars(Vars{
-		"title": title,
+		"title": "编辑帖子",
 		"topic": topic,
 	})
 
@@ -109,6 +111,11 @@ func (c Topic) Edit(id int64) revel.Result {
 }
 
 func (c Topic) EditPost(id int64, topic models.Topic, category int64) revel.Result {
+	user := c.user()
+	if has, _ := engine.Where("id = ? AND user_id = ?", id, user.Id).Get(&models.Topic{}); !has {
+		return c.Forbidden("抱歉，您没有权限")
+	}
+
 	topic.Validate(c.Validation)
 	if c.Validation.HasErrors() {
 		c.Validation.Keep()
