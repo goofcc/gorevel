@@ -16,6 +16,7 @@ go get -u -v github.com/qiniu/api
 go get -u -v github.com/garyburd/redigo/redis
 go get -u -v github.com/robfig/go-cache
 go get -u -v github.com/robfig/gomemcache/memcache
+go get -u -v github.com/robfig/cron
 
 export GOPATH="$OLDGOPATH"
 
