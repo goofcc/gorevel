@@ -9,7 +9,7 @@ go get -u -v github.com/robfig/revel
 go get -u -v github.com/robfig/revel/revel
 go get -u -v github.com/go-sql-driver/mysql
 go get -u -v github.com/go-xorm/xorm
-go get -u -v code.google.com/p/go-uuid/uuid
+go get -u -v github.com/pborman/uuid
 go get -u -v github.com/disintegration/imaging
 go get -u -v github.com/cbonello/revel-csrf
 go get -u -v github.com/qiniu/api
