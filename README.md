@@ -9,7 +9,7 @@ gorevel
 
 4. 默认添加管理员账号admin 密码123。
 
-###Requirements
+### Requirements
 
 - Go1.2+
 
@@ -25,7 +25,7 @@ gorevel
 - github.com/robfig/go-cache
 - github.com/robfig/gomemcache/memcache
 
-###Install
+### Install
 
     $ git clone git://github.com/goofcc/gorevel.git
     $ cd gorevel
