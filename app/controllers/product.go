@@ -133,7 +133,7 @@ func (c Product) EditPost(id int64, product models.Product) revel.Result {
 func getProducts() []models.Product {
 	var products []models.Product
 	if err := cache.Get("products", &products); err != nil {
-		engine.Find(&products)
+		engine.OrderBy("created DESC").Find(&products)
 		go cache.Set("products", products, cache.ForEverNeverExpiry)
 	}
 
