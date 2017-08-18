@@ -23,6 +23,6 @@ func init() {
 }
 
 func Init() {
-	engine = models.Engine
+	engine = models.GetEngine()
 	UPLOAD_PATH = revel.BasePath + "/public/upload/"
 }

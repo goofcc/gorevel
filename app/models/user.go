@@ -78,14 +78,14 @@ func (user User) Validate(v *revel.Validation) {
 
 func (u User) HasName() bool {
 	var user User
-	has, _ := Engine.Where("name = ?", u.Name).Get(&user)
+	has, _ := engine.Where("name = ?", u.Name).Get(&user)
 
 	return has
 }
 
 func (u User) HasEmail() bool {
 	var user User
-	has, _ := Engine.Where("email = ?", u.Email).Get(&user)
+	has, _ := engine.Where("email = ?", u.Email).Get(&user)
 
 	return has
 }
@@ -102,7 +102,7 @@ func (u User) GetPermissions() map[int]int {
 	if u.Permissions == nil {
 		u.Permissions = make(map[int]int)
 		var permissions []Permissions
-		Engine.Where("user_id = ?", u.Id).Find(&permissions)
+		engine.Where("user_id = ?", u.Id).Find(&permissions)
 
 		for _, perm := range permissions {
 			u.Permissions[perm.Perm] = perm.Perm

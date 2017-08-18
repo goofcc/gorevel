@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	Engine        *xorm.Engine
+	engine        *xorm.Engine
 	Smtp          SmtpType
 	QiniuScope    string
 	QiniuDomain   string
@@ -44,15 +44,14 @@ func Init() {
 
 	params := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true", user, password, host, dbname)
 
-	Engine, err = xorm.NewEngine(driver, params)
-	// defer Engine.Close()
+	engine, err = xorm.NewEngine(driver, params)
 	if err != nil {
-		panic(err)
+		revel.ERROR.Panicln(err)
 	}
 
-	// Engine.ShowSQL = revel.DevMode
+	// engine.ShowSQL = revel.DevMode
 
-	err = Engine.Sync(
+	err = engine.Sync(
 		new(User),
 		new(Category),
 		new(Topic),
@@ -62,12 +61,12 @@ func Init() {
 	)
 
 	if err != nil {
-		panic(err)
+		revel.ERROR.Panicln(err)
 	}
 
 	// 如果是空数据库，自动添加管理员账号 admin/123
-	if count, _ := Engine.Count(new(User)); count == 0 {
-		Engine.Insert(&User{
+	if count, _ := engine.Count(new(User)); count == 0 {
+		engine.Insert(&User{
 			Name:           "admin",
 			Email:          "admin@admin.com",
 			Avatar:         DefaultAvatar,
@@ -76,7 +75,7 @@ func Init() {
 			HashedPassword: EncryptPassword("123", ""),
 		})
 
-		Engine.Insert(
+		engine.Insert(
 			&Permissions{UserId: 1, Perm: 1},
 			&Permissions{UserId: 1, Perm: 2},
 		)
@@ -94,4 +93,8 @@ func Init() {
 	QiniuDomain, _ = c.String("qiniu", "qiniuDomain")
 
 	CachePageSize, _ = c.Int("", "cache.page")
+}
+
+func GetEngine() *xorm.Engine {
+	return engine
 }

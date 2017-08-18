@@ -28,9 +28,9 @@ func (category Category) Validate(v *revel.Validation) {
 func (c Category) HasName() bool {
 	var category Category
 	if c.Id > 0 {
-		Engine.Where("name = ? AND id != ?", c.Name, c.Id).Get(&category)
+		engine.Where("name = ? AND id != ?", c.Name, c.Id).Get(&category)
 	} else {
-		Engine.Where("name = ?", c.Name).Get(&category)
+		engine.Where("name = ?", c.Name).Get(&category)
 	}
 
 	return category.Id > 0
