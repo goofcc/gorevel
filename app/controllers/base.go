@@ -88,7 +88,7 @@ func (c *Base) getUser(username string) *models.User {
 
 func (c *Base) bindVars(vars Vars) {
 	for k, v := range vars {
-		c.Args[k] = v
+		c.ViewArgs[k] = v
 	}
 }
 
