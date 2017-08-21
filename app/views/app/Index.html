@@ -1,0 +1,130 @@
+{{set . "title" ""}}
+{{template "header.html" .}}
+
+<header class="hero-unit">
+  <div class="container">
+    <div class="row" style="margin-left:-50px;">
+      <div class="hero-img"><img src="{{.qiniuDomain}}/public/img/RevelWhiteLines.png" height="500" width="350"></div>
+      <div class="hero-text">
+        <h1><a href="http://revel.github.io"  target="_blank">Revel</a><h1>
+        <p>一个快速、高效的 Go 语言 Web 框架 .</p>
+
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="row">
+  </div>
+  <section id="quickstart">
+    <div class="page-header">
+      <h1>快速入门</h1>
+    </div>
+    1、安装 Revel 框架
+    <pre><code>$ go get github.com/revel/revel
+</code></pre>
+
+
+2、安装 Revel 命令行工具
+    <pre><code>$ go get github.com/revel/cmd/revel
+</code></pre>
+
+3、创建 Revel 应用
+<pre><code>$ revel new myapp
+$ revel run myapp
+</code></pre>
+<p>打开浏览器访问 <a href="http://localhost:9000" target="_blank">http://localhost:9000</a></p>
+
+<p><img src='{{.qiniuDomain}}/public/img/YourBaseIsReady.png' alt='Your Base Is Ready' /></p>
+
+<div class="page-header">
+  <h2>Revel的目录结构</h2>
+</div>
+<code>$ revel new myapp</code> 命令生成的目录结构如下：
+<pre>
+<code>myapp                 项目根目录
+├── app               MVC框架目录
+│   ├── <a>controllers</a>   控制器目录
+│   ├── init.go
+│   ├── <a>models</a>        模型目录
+│   ├── routes
+│   ├── tmp
+│   └── <a>views</a>         视图目录
+├── conf
+│   ├── app.conf      配置文件
+│   └── <a>routes</a>        路由文件
+├── messages          国际化目录
+├── public            静态文件目录
+└── tests
+</code></pre>
+
+<br>
+
+<div class="page-header">
+  <h2>Revel是如何工作的</h2>
+</div>
+
+<h3 id="routes">1、路由<code>../myapp/conf/routes</code></h3>
+<pre><code>GET     /                                       App.Index</code></pre>
+
+<p>当浏览器访问 /， 即<a> http://localhost:9000/</a> 的时候，Revel会执行<a>App</a>控制器的<a>Index</a>方法</p>
+<br>
+<h3 id="actions">2、控制器<code>../myapp/app/controllers</code></h3>
+
+<pre><code>package controllers
+
+import "github.com/revel/revel"
+
+type <a>App</a> struct {
+  *revel.Controller
+}
+
+func (c App) <a>Index()</a> revel.Result {
+  return c.Render()
+}</code></pre>
+<ul>
+
+  <li>App.Index调用了c.Render()，该方法查找视图目录中与方法名同名的模板App/Index.html，渲染后返回给浏览器.</li>
+</ul>
+<br>
+
+<h3 id="templates">3、视图（Templates）<code>../myapp/app/views</code></h3>
+
+<p>所有的模板都保存在 <a>views</a> 目录中. 这个例子中 Revel 查找 <strong>Index.html</strong> 模板, 并作为一个 <a href="http://www.golang.org/pkg/html/template" target="_blank">Go template</a> 进行渲染.</p>
+
+<pre><code>{{"{{"}}set . "title" "Home"{{"}}"}}
+{{"{{"}}template "header.html" .{{"}}"}}
+
+&lt;header class="hero-unit" style="background-color:#A9F16C"&gt;
+  &lt;div class="container"&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="hero-text"&gt;
+    &lt;h1&gt;It works!&lt;/h1&gt;
+    &lt;p&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/header&gt;
+
+&lt;div class="container"&gt;
+  &lt;div class="row"&gt;
+  &lt;div class="span6"&gt;
+    {{"{{"}}template "flash.html" .{{"}}"}}
+  &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+{{"{{"}}template "footer.html" .{{"}}"}}</code></pre>
+
+<p>Revel 添加了一些 <a href="http://www.golang.org/pkg/html/template" target="_blank">Go template</a> 没有的方法，比如eq，set，field 等好用的方法。<br>
+  <br>
+我们也可以自定义模板方法，下面是个简单的例子.</p>
+<pre>
+<code>func init() {
+  revel.TemplateFuncs["eq"] = func(a, b interface{}) bool { return a == b }
+}</code></pre>
+<br>
+更多Revel内容，请参考<a href="/docs/index.html" target="_blank"> 本站文档</a> 或 <a href="http://revel.github.io" target="_blank">官方手册</a>。
+</div> <!-- /container -->
+{{template "footer.html" .}}
