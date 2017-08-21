@@ -1,6 +1,6 @@
 # Go 语言 Revel 框架学习
 
-gorevel, [Revel中文社区](http://gorevel.cn) 源码。
+gorevel, [Revel 中文社区](http://gorevel.cn) 源码。
 
 ## Requirements
 
@@ -11,7 +11,7 @@ gorevel, [Revel中文社区](http://gorevel.cn) 源码。
 
 ``` bash
   cd $GOPATH/src
-  git clone https://github.com/goofcc/gorevel
+  git clone https://github.com/goofcc/gorevel.git
   revel run gorevel
 ```
 
