@@ -41,7 +41,7 @@ type Base struct {
 func (c *Base) checkUser() revel.Result {
 	user := c.user()
 	if user != nil {
-		c.Args["user"] = user
+		c.ViewArgs["user"] = user
 	}
 
 	// 检查是否需要授权
@@ -65,8 +65,8 @@ func (c *Base) checkUser() revel.Result {
 }
 
 func (c *Base) user() *models.User {
-	if c.Args["user"] != nil {
-		return c.Args["user"].(*models.User)
+	if c.ViewArgs["user"] != nil {
+		return c.ViewArgs["user"].(*models.User)
 	}
 
 	if username, ok := c.Session["user"]; ok {
