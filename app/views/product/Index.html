@@ -17,8 +17,10 @@
 
 					<li class="span8">
 						<h3><a href="{{.Site}}" target="_blank">{{.Name}}</a>
-							{{if eq $.user.Id .User.Id}}
+							{{if $.user}}
+							{{if eq .User.Id $.user.Id}}
 							<a href="{{url "Product.Edit" .Id}}"><i class="icon-edit"></i></a>
+							{{end}}
 							{{end}}
 
 							{{if .Repository}}
