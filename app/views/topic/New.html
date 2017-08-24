@@ -9,7 +9,8 @@
 				<h3>{{.title}}</h3>
 			</div>
 
-			<form action="{{if .topic}}{{url "Topic.Edit" .topic.Id}}{{else}}{{url "Topic.New"}}{{end}}" method="POST" class="form-horizontal">
+			<form action="{{if .topic}} {{url "Topic.Edit" .topic.Id}} {{else}} {{url "Topic.New"}} {{end}}"
+				method="POST" class="form-horizontal">
 				<input type="hidden" name="csrf_token" value="{{ .csrf_token }}" />
 
 				{{with $field := field "topic.Title" .}}
@@ -17,7 +18,7 @@
 					<label class="control-label" for="{{$field.Name}}">标题</label>
 					<div class="controls">
 						<input class="input-xxlarge" type="text" name="{{$field.Name}}"
-							value="{{if $.errors}}{{$field.Flash}}{{else}}{{$.topic.Title}}{{end}}">
+							value="{{if $.errors}} {{$field.Flash}} {{else}} {{$.topic.Title}} {{end}}">
 						<span class="text-error">{{$field.Error}}</span>
 					</div>
 				</div>
@@ -30,7 +31,12 @@
 						<select name="{{$field.Name}}">
 							{{range $.categories}}
 								<option value="{{.Id}}" 
-								{{if $.errors}}{{if eqis .Id $field.Flash}} selected="selected"{{end}}{{else if eq .Id $.topic.Category.Id}} selected="selected"{{end}}>
+								{{if $.errors}} 
+									{{if eqis .Id $field.Flash}} selected="selected" {{end}}
+								{{else if $.topic.Category.Id}} 
+									{{if eq .Id $.topic.Category.Id}} selected="selected" {{end}} 
+								{{end}}
+								>
 								{{.Name}}
 								</option>
 							{{end}}
@@ -45,7 +51,7 @@
 					<label class="control-label" for="{{$field.Name}}">内容</label>
 					<div class="controls">
 						<textarea class="ckeditor" name="{{$field.Name}}" class="span8">
-							{{if $.errors}}{{$field.Flash}}{{else}}{{$.topic.Content}}{{end}}
+							{{if $.errors}} {{$field.Flash}} {{else}} {{$.topic.Content}} {{end}}
 						</textarea>
 						<span class="text-error">{{$field.Error}}</span>
 					</div>
