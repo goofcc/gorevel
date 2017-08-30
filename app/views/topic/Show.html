@@ -16,8 +16,10 @@
 							<span class="badge badge-info pull-right">{{.Replies}}</span>
 						{{end}}
 						<h4 class="media-heading">{{.Title}} 
+							{{if $.user}}
 							{{if eq .User.Id $.user.Id}}
-							<a href="{{url "Topic.Edit" .Id}}"><i class="icon-edit"></i></a>
+								<a href="{{url "Topic.Edit" .Id}}"><i class="icon-edit"></i></a>
+							{{end}}
 							{{end}}
 						</h4>
 						<span class="label">{{.Category.Name}}</span> • 
