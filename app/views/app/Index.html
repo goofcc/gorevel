@@ -7,7 +7,7 @@
       <div class="hero-img"><img src="{{.qiniuDomain}}/public/img/RevelWhiteLines.png" height="500" width="350"></div>
       <div class="hero-text">
         <h1><a href="http://revel.github.io"  target="_blank">Revel</a><h1>
-        <p>一个快速、高效的 Go 语言 Web 框架 .</p>
+        <p>一个高生产力的 Go 语言 Web 框架。</p>
 
       </div>
     </div>
@@ -22,18 +22,14 @@
       <h1>快速入门</h1>
     </div>
     1、安装 Revel 框架
-    <pre><code>$ go get github.com/revel/revel
-</code></pre>
+    <pre><code>$ go get -u -v github.com/revel/cmd/revel</code></pre>
 
+2、新建 Revel 应用
+<pre><code>$ revel new myapp</code></pre>
 
-2、安装 Revel 命令行工具
-    <pre><code>$ go get github.com/revel/cmd/revel
-</code></pre>
+3、运行
+<pre><code>$ revel run myapp</code></pre>
 
-3、创建 Revel 应用
-<pre><code>$ revel new myapp
-$ revel run myapp
-</code></pre>
 <p>打开浏览器访问 <a href="http://localhost:9000" target="_blank">http://localhost:9000</a></p>
 
 <p><img src='{{.qiniuDomain}}/public/img/YourApplicationIsReady.png' alt='Your Base Is Ready' /></p>
@@ -125,6 +121,6 @@ func (c App) <a>Index()</a> revel.Result {
   revel.TemplateFuncs["eq"] = func(a, b interface{}) bool { return a == b }
 }</code></pre>
 <br>
-更多Revel内容，请参考<a href="/docs/index.html" target="_blank"> 本站文档</a> 或 <a href="http://revel.github.io" target="_blank">官方手册</a>。
+更多 Revel 内容，请参考<a href="/docs/index.html" target="_blank"> 本站文档</a> 或 <a href="http://revel.github.io" target="_blank">官方手册</a>。
 </div> <!-- /container -->
 {{template "footer.html" .}}
