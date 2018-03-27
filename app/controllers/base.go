@@ -49,7 +49,7 @@ func (c *Base) checkUser() revel.Result {
 	if value, needCheck := Permissions[action]; needCheck {
 		if user == nil {
 			c.Flash.Error("请先登录")
-			c.Session["preUrl"] = c.Request.Request.URL.String()
+			c.Session["preUrl"] = c.Request.URL.String()
 			return c.Redirect(routes.User.Signin())
 		} else {
 			perm := user.GetPermissions()

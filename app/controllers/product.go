@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"net/http"
+
 	"github.com/revel/revel"
 	"github.com/revel/revel/cache"
 
@@ -27,7 +29,8 @@ func (c Product) New() revel.Result {
 func (c Product) NewPost(product models.Product) revel.Result {
 	product.Validate(c.Validation)
 
-	file, header, err := c.Request.FormFile("image")
+	file, header, err := c.Request.In.GetRaw().(*http.Request).FormFile("image")
+
 	if err == nil {
 		defer file.Close()
 		if ok := checkImageExt(c.Validation, &file, header, "image"); ok {
@@ -91,7 +94,7 @@ func (c Product) EditPost(id int64, product models.Product) revel.Result {
 
 	product.Validate(c.Validation)
 
-	file, header, err := c.Request.FormFile("image")
+	file, header, err := c.Request.In.GetRaw().(*http.Request).FormFile("image")
 	if err == nil {
 		defer file.Close()
 		if ok := checkImageExt(c.Validation, &file, header, "image"); ok {

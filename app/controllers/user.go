@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/revel/revel"
 
@@ -141,7 +142,7 @@ func (c User) EditPost(avatar string) revel.Result {
 		return c.NotFound("用户不存在")
 	}
 
-	file, header, err := c.Request.FormFile("image")
+	file, header, err := c.Request.In.GetRaw().(*http.Request).FormFile("image")
 	if err == nil {
 		defer file.Close()
 		if ok := checkImageExt(c.Validation, &file, header, IMAGE_EXTS); ok {

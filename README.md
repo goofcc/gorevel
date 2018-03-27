@@ -4,9 +4,9 @@ Go 语言 Revel 框架学习, [Revel 中文社区](http://gorevel.cn) 源码。
 
 ## Requirements
 
-* Revel v0.17.1
-* Go v1.6+
-
+* Revel v0.18.0
+* Go v1.9.2 +
+   
 ## Install
 
 ``` bash
