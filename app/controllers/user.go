@@ -40,7 +40,7 @@ func (c User) SignupPost(user models.User) revel.Result {
 	}
 
 	subject := "激活账号 —— Revel中文社区"
-	content := `<h2><a href="http://gorevel.cn/user/validate/` + user.ValidateCode + `">激活账号</a></h2>`
+	content := `<h2><a href="https://gorevel.cn/user/validate/` + user.ValidateCode + `">激活账号</a></h2>`
 	go sendMail(subject, content, []string{user.Email})
 
 	c.Flash.Success(fmt.Sprintf("%s 注册成功，请到您的邮箱 %s 激活账号！", user.Name, user.Email))
@@ -217,7 +217,7 @@ func (c User) ForgotPasswordPost(email string) revel.Result {
 	engine.Where("email = ?", email).Cols("validate_code").Update(&user)
 
 	subject := "重设密码 —— Revel社区"
-	content := `<h2><a href="http://gorevel.cn/reset_password/` + user.ValidateCode + `">重设密码</a></h2>`
+	content := `<h2><a href="https://gorevel.cn/reset_password/` + user.ValidateCode + `">重设密码</a></h2>`
 
 	go sendMail(subject, content, []string{user.Email})
 
